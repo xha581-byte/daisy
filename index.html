@@ -5,18 +5,21 @@
   <title>Excel Analyst Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Tailwind CSS CDN for quick styling -->
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- SheetJS (XLSX) for reading Excel files in browser -->
+  <!-- SheetJS (XLSX) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Chart.js for charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
   <div class="max-w-6xl mx-auto py-10 px-4">
     <header class="mb-8">
       <h1 class="text-3xl font-bold text-slate-900 mb-2">Excel Analyst Panel</h1>
       <p class="text-slate-600">
-        Upload an <span class="font-semibold">.xlsx</span> file, choose a sheet, and view quick stats for your data.
+        Upload <span class="font-semibold">.xlsx</span> → Filter → Group → Charts.
       </p>
     </header>
 
@@ -75,13 +78,158 @@
       </div>
     </div>
 
+    <!-- Filter + Group & Chart -->
+    <div class="grid md:grid-cols-2 gap-6 mb-6">
+      <!-- Filters -->
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. Filters (按值筛选)</h2>
+        <p class="text-xs text-slate-500 mb-3">
+          Filter rows by column and value. Works on the data before grouping & charts.
+        </p>
+        <div class="space-y-3 text-sm">
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1" for="filterColumnSelect">
+              Column
+            </label>
+            <select id="filterColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
+              <option value="">(All rows, no filter)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1" for="filterOperatorSelect">
+                Operator
+              </label>
+              <select id="filterOperatorSelect" class="w-full rounded-lg border-slate-300 text-sm">
+                <option value="contains">contains (包含)</option>
+                <option value="equals">equals (等于)</option>
+                <option value=">">&gt;</option>
+                <option value="<">&lt;</option>
+                <option value=">=">&gt;=</option>
+                <option value="<=">&lt;=</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1" for="filterValueInput">
+                Value
+              </label>
+              <input
+                id="filterValueInput"
+                type="text"
+                class="w-full rounded-lg border-slate-300 text-sm"
+                placeholder="eg: 100 or VIP"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <button
+              id="applyFilterBtn"
+              class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
+            >
+              Apply filter
+            </button>
+            <button
+              id="resetFilterBtn"
+              class="px-3 py-2 rounded-lg text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50"
+            >
+              Reset
+            </button>
+          </div>
+
+          <p id="filterInfo" class="text-xs text-slate-500 mt-1">
+            No filter applied. Using all rows.
+          </p>
+        </div>
+      </div>
+
+      <!-- Group & Chart -->
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">
+          4. Group-by & Charts（首充人数 / 首充金额）
+        </h2>
+        <p class="text-xs text-slate-500 mb-3">
+          Group your data by one column, calculate Count(人数) or Sum(金额), then visualize.
+        </p>
+
+        <div class="space-y-3 text-sm">
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1" for="groupColumnSelect">
+              Group-by column（分组字段）
+            </label>
+            <select id="groupColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
+              <option value="">(Choose column)</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1" for="metricColumnSelect">
+                Metric column（金额字段，可选）
+              </label>
+              <select id="metricColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
+                <option value="">(Only use Count)</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-700 mb-1" for="metricTypeSelect">
+                Metric type
+              </label>
+              <select id="metricTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
+                <option value="count">Count 行数 = 首充人数</option>
+                <option value="sum">Sum 数值 = 首充金额</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-medium text-slate-700 mb-1" for="chartTypeSelect">
+              Chart type
+            </label>
+            <select id="chartTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
+              <option value="bar">Bar</option>
+              <option value="line">Line</option>
+              <option value="pie">Pie</option>
+            </select>
+          </div>
+
+          <div class="flex items-center gap-3 pt-2">
+            <button
+              id="runGroupBtn"
+              class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
+            >
+              Run Group & Chart
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-xs font-medium text-slate-700 mb-1">Group result (Top groups)</p>
+          <div
+            id="groupResultContainer"
+            class="border border-slate-200 rounded-xl max-h-40 overflow-auto text-xs"
+          >
+            <p class="text-slate-400 text-xs p-3">No group yet. Choose columns and click run.</p>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <p class="text-xs font-medium text-slate-700 mb-1">Chart</p>
+          <div class="border border-slate-200 rounded-xl p-2">
+            <canvas id="chartCanvas" height="200"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Stats + Table -->
     <div class="grid lg:grid-cols-3 gap-6">
       <!-- Stats -->
       <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. Column statistics</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">5. Column statistics</h2>
         <p class="text-xs text-slate-500 mb-3">
-          Detected numeric columns only. Shows count, min, max, sum, and average.
+          Numeric columns only. Count, min, max, sum, average (based on filtered data).
         </p>
         <div id="statsContainer" class="space-y-3 text-sm text-slate-700">
           <p class="text-slate-400 text-sm">Upload a file and select a sheet.</p>
@@ -91,7 +239,7 @@
       <!-- Table preview -->
       <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
         <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-slate-900">4. Data preview</h2>
+          <h2 class="text-lg font-semibold text-slate-900">6. Data preview</h2>
           <p class="text-xs text-slate-500" id="previewInfo">Showing first 0 rows</p>
         </div>
         <div class="overflow-auto max-h-[500px] border border-slate-200 rounded-xl">
@@ -122,15 +270,52 @@
     const tableBody = document.getElementById('tableBody');
     const previewInfo = document.getElementById('previewInfo');
 
+    const filterColumnSelect = document.getElementById('filterColumnSelect');
+    const filterOperatorSelect = document.getElementById('filterOperatorSelect');
+    const filterValueInput = document.getElementById('filterValueInput');
+    const applyFilterBtn = document.getElementById('applyFilterBtn');
+    const resetFilterBtn = document.getElementById('resetFilterBtn');
+    const filterInfo = document.getElementById('filterInfo');
+
+    const groupColumnSelect = document.getElementById('groupColumnSelect');
+    const metricColumnSelect = document.getElementById('metricColumnSelect');
+    const metricTypeSelect = document.getElementById('metricTypeSelect');
+    const chartTypeSelect = document.getElementById('chartTypeSelect');
+    const runGroupBtn = document.getElementById('runGroupBtn');
+    const groupResultContainer = document.getElementById('groupResultContainer');
+    const chartCanvas = document.getElementById('chartCanvas');
+
     let workbook = null;
     let currentSheetName = null;
+    let originalData = [];
+    let filteredData = [];
+    let currentHeaders = [];
+    let chartInstance = null;
 
-    // Handle visible label click to open file dialog
+    // Open file dialog when label clicked
     document.querySelector('label[for="fileInput"]').addEventListener('click', () => {
       fileInput.click();
     });
 
     fileInput.addEventListener('change', handleFile);
+    sheetSelect.addEventListener('change', (e) => {
+      const sheetName = e.target.value;
+      if (!sheetName || !workbook) return;
+      currentSheetName = sheetName;
+      updateSheetData(sheetName);
+    });
+
+    applyFilterBtn.addEventListener('click', () => {
+      applyFilter();
+    });
+
+    resetFilterBtn.addEventListener('click', () => {
+      resetFilter();
+    });
+
+    runGroupBtn.addEventListener('click', () => {
+      runGroupAndChart();
+    });
 
     function handleFile(event) {
       const file = event.target.files[0];
@@ -172,7 +357,7 @@
 
         // Populate sheet selector
         sheetSelect.innerHTML = '';
-        sheetNames.forEach((name, index) => {
+        sheetNames.forEach((name) => {
           const opt = document.createElement('option');
           opt.value = name;
           opt.textContent = name;
@@ -188,13 +373,6 @@
       reader.readAsArrayBuffer(file);
     }
 
-    sheetSelect.addEventListener('change', (e) => {
-      const sheetName = e.target.value;
-      if (!sheetName || !workbook) return;
-      currentSheetName = sheetName;
-      updateSheetData(sheetName);
-    });
-
     function updateSheetData(sheetName) {
       const sheet = workbook.Sheets[sheetName];
       if (!sheet) return;
@@ -204,25 +382,33 @@
       // Convert sheet to JSON (array of objects)
       const data = XLSX.utils.sheet_to_json(sheet, { defval: null });
 
-      // Update sheet info
-      const rowCount = data.length;
-      const headers = getHeadersFromSheet(sheet);
+      originalData = data;
+      filteredData = [...originalData];
 
+      // Headers
+      const headers = getHeadersFromSheet(sheet);
+      currentHeaders = headers;
+
+      const rowCount = filteredData.length;
       infoRows.textContent = rowCount.toString();
       infoCols.textContent = headers.length.toString();
 
-      // Build table
-      buildTable(headers, data);
+      // Populate dynamic selectors
+      populateDynamicSelectors(headers);
 
-      // Build stats
-      buildStats(headers, data);
+      // Build views based on filtered data
+      buildTable(headers, filteredData);
+      buildStats(headers, filteredData);
+
+      // Reset filter text
+      filterInfo.textContent = 'No filter applied. Using all rows.';
     }
 
     function buildTable(headers, data) {
       tableHead.innerHTML = '';
       tableBody.innerHTML = '';
 
-      if (headers.length === 0) {
+      if (!headers || headers.length === 0) {
         previewInfo.textContent = 'No columns detected';
         return;
       }
@@ -259,12 +445,11 @@
     function buildStats(headers, data) {
       statsContainer.innerHTML = '';
 
-      if (data.length === 0) {
+      if (!data || data.length === 0) {
         statsContainer.innerHTML = '<p class="text-slate-400 text-sm">No data rows found.</p>';
         return;
       }
 
-      // Detect numeric columns and compute stats
       const numericCols = {};
 
       headers.forEach((header) => {
@@ -315,11 +500,308 @@
       });
     }
 
+    function populateDynamicSelectors(headers) {
+      // Filter column
+      filterColumnSelect.innerHTML = '<option value="">(All rows, no filter)</option>';
+      headers.forEach((h) => {
+        const opt = document.createElement('option');
+        opt.value = h;
+        opt.textContent = h;
+        filterColumnSelect.appendChild(opt);
+      });
+
+      // Group-by column
+      groupColumnSelect.innerHTML = '<option value="">(Choose column)</option>';
+      headers.forEach((h) => {
+        const opt = document.createElement('option');
+        opt.value = h;
+        opt.textContent = h;
+        groupColumnSelect.appendChild(opt);
+      });
+
+      // Metric column
+      metricColumnSelect.innerHTML = '<option value="">(Only use Count)</option>';
+      headers.forEach((h) => {
+        const opt = document.createElement('option');
+        opt.value = h;
+        opt.textContent = h;
+        metricColumnSelect.appendChild(opt);
+      });
+    }
+
+    function applyFilter() {
+      if (!originalData || originalData.length === 0) return;
+
+      const col = filterColumnSelect.value;
+      const op = filterOperatorSelect.value;
+      const val = filterValueInput.value.trim();
+
+      if (!col || !op || !val) {
+        // No valid filter -> use all rows
+        filteredData = [...originalData];
+        filterInfo.textContent = 'No filter applied. Using all rows.';
+      } else {
+        filteredData = originalData.filter((row) => {
+          const cell = row[col];
+          return passesFilter(cell, op, val);
+        });
+        filterInfo.textContent = `Filter applied on [${col}] with [${op} ${val}]. Rows: ${filteredData.length}`;
+      }
+
+      // Rebuild table & stats based on filtered data
+      infoRows.textContent = filteredData.length.toString();
+      buildTable(currentHeaders, filteredData);
+      buildStats(currentHeaders, filteredData);
+
+      // Reset group result & chart when filter changes
+      groupResultContainer.innerHTML =
+        '<p class="text-slate-400 text-xs p-3">Filter changed. Run group again.</p>';
+      clearChart();
+    }
+
+    function resetFilter() {
+      filterColumnSelect.value = '';
+      filterOperatorSelect.value = 'contains';
+      filterValueInput.value = '';
+      filteredData = [...originalData];
+      filterInfo.textContent = 'No filter applied. Using all rows.';
+
+      infoRows.textContent = filteredData.length.toString();
+      buildTable(currentHeaders, filteredData);
+      buildStats(currentHeaders, filteredData);
+
+      groupResultContainer.innerHTML =
+        '<p class="text-slate-400 text-xs p-3">Filter reset. Run group again.</p>';
+      clearChart();
+    }
+
+    function passesFilter(cell, op, val) {
+      if (cell === null || cell === undefined) return false;
+      const cellStr = String(cell);
+      const valStr = String(val);
+
+      if (op === 'contains') {
+        return cellStr.toLowerCase().includes(valStr.toLowerCase());
+      }
+      if (op === 'equals') {
+        return cellStr.toLowerCase() === valStr.toLowerCase();
+      }
+
+      // Numeric compare
+      const numCell = parseFloat(cellStr);
+      const numVal = parseFloat(valStr);
+      if (isNaN(numCell) || isNaN(numVal)) return false;
+
+      switch (op) {
+        case '>':
+          return numCell > numVal;
+        case '<':
+          return numCell < numVal;
+        case '>=':
+          return numCell >= numVal;
+        case '<=':
+          return numCell <= numVal;
+        default:
+          return false;
+      }
+    }
+
+    function runGroupAndChart() {
+      if (!filteredData || filteredData.length === 0) {
+        groupResultContainer.innerHTML =
+          '<p class="text-slate-400 text-xs p-3">No data after filter.</p>';
+        clearChart();
+        return;
+      }
+
+      const groupCol = groupColumnSelect.value;
+      const metricCol = metricColumnSelect.value;
+      const metricType = metricTypeSelect.value;
+
+      if (!groupCol) {
+        groupResultContainer.innerHTML =
+          '<p class="text-red-500 text-xs p-3">Please choose a group-by column.</p>';
+        clearChart();
+        return;
+      }
+
+      if (metricType === 'sum' && !metricCol) {
+        groupResultContainer.innerHTML =
+          '<p class="text-red-500 text-xs p-3">For Sum(金额) please choose a metric column.</p>';
+        clearChart();
+        return;
+      }
+
+      const groupData = computeGroupData(filteredData, groupCol, metricCol);
+
+      renderGroupTable(groupData);
+      updateChart(groupData, groupCol, metricCol, metricType);
+    }
+
+    function computeGroupData(data, groupCol, metricCol) {
+      const groups = new Map();
+
+      data.forEach((row) => {
+        const keyRaw = row[groupCol];
+        const key =
+          keyRaw === null || keyRaw === undefined || keyRaw === '' ? '(空)' : String(keyRaw);
+
+        let entry = groups.get(key);
+        if (!entry) {
+          entry = { group: key, count: 0, sum: 0 };
+          groups.set(key, entry);
+        }
+
+        entry.count += 1;
+
+        if (metricCol) {
+          const raw = row[metricCol];
+          const num = parseFloat(raw);
+          if (!isNaN(num) && isFinite(num)) {
+            entry.sum += num;
+          }
+        }
+      });
+
+      const arr = Array.from(groups.values());
+
+      // sort: by sum if metricCol & sum type, else by count
+      arr.sort((a, b) => {
+        if (metricCol) {
+          return b.sum - a.sum;
+        }
+        return b.count - a.count;
+      });
+
+      // Optional: limit to top 50 groups
+      return arr.slice(0, 50);
+    }
+
+    function renderGroupTable(groupData) {
+      groupResultContainer.innerHTML = '';
+
+      if (!groupData || groupData.length === 0) {
+        groupResultContainer.innerHTML =
+          '<p class="text-slate-400 text-xs p-3">No group result.</p>';
+        return;
+      }
+
+      const hasSum = metricColumnSelect.value !== '';
+
+      const table = document.createElement('table');
+      table.className = 'min-w-full text-xs';
+
+      const thead = document.createElement('thead');
+      thead.className = 'bg-slate-50';
+      const trh = document.createElement('tr');
+
+      const headers = ['Group 值', '首充人数 (Count)'];
+      if (hasSum) headers.push('首充金额 (Sum)');
+
+      headers.forEach((h) => {
+        const th = document.createElement('th');
+        th.className = 'px-3 py-1 text-left font-semibold text-slate-700 border-b border-slate-200';
+        th.textContent = h;
+        trh.appendChild(th);
+      });
+      thead.appendChild(trh);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      groupData.forEach((g) => {
+        const tr = document.createElement('tr');
+
+        const tdGroup = document.createElement('td');
+        tdGroup.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
+        tdGroup.textContent = g.group;
+        tr.appendChild(tdGroup);
+
+        const tdCount = document.createElement('td');
+        tdCount.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
+        tdCount.textContent = g.count;
+        tr.appendChild(tdCount);
+
+        if (hasSum) {
+          const tdSum = document.createElement('td');
+          tdSum.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
+          tdSum.textContent = formatNumber(g.sum);
+          tr.appendChild(tdSum);
+        }
+
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      groupResultContainer.appendChild(table);
+    }
+
+    function updateChart(groupData, groupCol, metricCol, metricType) {
+      clearChart();
+      if (!groupData || groupData.length === 0) return;
+
+      const chartType = chartTypeSelect.value || 'bar';
+
+      const labels = groupData.map((g) => g.group);
+      let values;
+      let labelText;
+
+      if (metricType === 'sum' && metricCol) {
+        values = groupData.map((g) => g.sum);
+        labelText = `${metricCol} Sum (首充金额)`;
+      } else {
+        values = groupData.map((g) => g.count);
+        labelText = `Count of ${groupCol} (首充人数)`;
+      }
+
+      const ctx = chartCanvas.getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: chartType,
+        data: {
+          labels,
+          datasets: [
+            {
+              label: labelText,
+              data: values,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+            },
+          },
+          scales:
+            chartType === 'pie'
+              ? {}
+              : {
+                  x: {
+                    ticks: {
+                      autoSkip: true,
+                      maxTicksLimit: 10,
+                    },
+                  },
+                  y: {
+                    beginAtZero: true,
+                  },
+                },
+        },
+      });
+    }
+
+    function clearChart() {
+      if (chartInstance) {
+        chartInstance.destroy();
+        chartInstance = null;
+      }
+    }
+
     function getHeadersFromSheet(sheet) {
-      // Use SheetJS to get header row
       const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:A1');
       const headers = [];
-      const firstRow = range.s.r; // start row index
+      const firstRow = range.s.r;
 
       for (let C = range.s.c; C <= range.e.c; ++C) {
         const cellAddress = XLSX.utils.encode_cell({ r: firstRow, c: C });
@@ -357,6 +839,9 @@
 
       workbook = null;
       currentSheetName = null;
+      originalData = [];
+      filteredData = [];
+      currentHeaders = [];
 
       sheetSelect.innerHTML = '<option value="">Upload a file first</option>';
       sheetSelect.disabled = true;
@@ -374,13 +859,22 @@
       tableHead.innerHTML = '';
       tableBody.innerHTML = '';
       previewInfo.textContent = 'Showing first 0 rows';
+
+      filterColumnSelect.innerHTML = '<option value="">(All rows, no filter)</option>';
+      metricColumnSelect.innerHTML = '<option value="">(Only use Count)</option>';
+      groupColumnSelect.innerHTML = '<option value="">(Choose column)</option>';
+      filterInfo.textContent = 'No filter applied. Using all rows.';
+
+      groupResultContainer.innerHTML =
+        '<p class="text-slate-400 text-xs p-3">No group yet. Choose columns and click run.</p>';
+      clearChart();
     }
 
     function escapeHTML(str) {
       return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
+        .replace(/>/g, '&gt;/')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
