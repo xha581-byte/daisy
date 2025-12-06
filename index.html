@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Excel Analyst Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Tailwind CSS CDN for quick styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SheetJS (XLSX) for reading Excel files in browser -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-slate-100 min-h-screen">
+  <div class="max-w-6xl mx-auto py-10 px-4">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-slate-900 mb-2">Excel Analyst Panel</h1>
+      <p class="text-slate-600">
+        Upload an <span class="font-semibold">.xlsx</span> file, choose a sheet, and view quick stats for your data.
+      </p>
+    </header>
+
+    <!-- Upload Card -->
+    <div class="bg-white rounded-2xl shadow p-6 mb-6">
+      <h2 class="text-xl font-semibold text-slate-900 mb-4">1. Upload your Excel file</h2>
+      <label
+        for="fileInput"
+        class="flex items-center justify-between gap-4 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 cursor-pointer hover:border-slate-500 transition"
+      >
+        <div>
+          <p class="font-medium text-slate-800">Click to upload</p>
+          <p class="text-sm text-slate-500">Supported: .xlsx</p>
+        </div>
+        <div class="text-sm text-slate-500" id="fileName">No file selected</div>
+      </label>
+      <input type="file" id="fileInput" accept=".xlsx" class="hidden" />
+      <p id="fileError" class="mt-2 text-sm text-red-600 hidden"></p>
+    </div>
+
+    <!-- Sheet & Info -->
+    <div class="grid md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">2. Sheet selection</h2>
+        <label class="block text-sm font-medium text-slate-700 mb-2" for="sheetSelect">
+          Choose sheet
+        </label>
+        <select
+          id="sheetSelect"
+          class="w-full rounded-lg border-slate-300 text-sm"
+          disabled
+        >
+          <option value="">Upload a file first</option>
+        </select>
+        <p class="mt-3 text-xs text-slate-500">
+          After uploading, select the sheet you want to analyze.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">File info</h2>
+        <div class="space-y-2 text-sm text-slate-700">
+          <p><span class="font-medium">Name:</span> <span id="infoName">—</span></p>
+          <p><span class="font-medium">Size:</span> <span id="infoSize">—</span></p>
+          <p><span class="font-medium">Total sheets:</span> <span id="infoSheets">—</span></p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow p-6">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">Sheet info</h2>
+        <div class="space-y-2 text-sm text-slate-700">
+          <p><span class="font-medium">Active sheet:</span> <span id="infoActiveSheet">—</span></p>
+          <p><span class="font-medium">Rows (approx):</span> <span id="infoRows">—</span></p>
+          <p><span class="font-medium">Columns:</span> <span id="infoCols">—</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats + Table -->
+    <div class="grid lg:grid-cols-3 gap-6">
+      <!-- Stats -->
+      <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. Column statistics</h2>
+        <p class="text-xs text-slate-500 mb-3">
+          Detected numeric columns only. Shows count, min, max, sum, and average.
+        </p>
+        <div id="statsContainer" class="space-y-3 text-sm text-slate-700">
+          <p class="text-slate-400 text-sm">Upload a file and select a sheet.</p>
+        </div>
+      </div>
+
+      <!-- Table preview -->
+      <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
+        <div class="flex items-center justify-between mb-3">
+          <h2 class="text-lg font-semibold text-slate-900">4. Data preview</h2>
+          <p class="text-xs text-slate-500" id="previewInfo">Showing first 0 rows</p>
+        </div>
+        <div class="overflow-auto max-h-[500px] border border-slate-200 rounded-xl">
+          <table class="min-w-full text-xs" id="dataTable">
+            <thead class="bg-slate-50" id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const fileNameLabel = document.getElementById('fileName');
+    const fileError = document.getElementById('fileError');
+    const sheetSelect = document.getElementById('sheetSelect');
+
+    const infoName = document.getElementById('infoName');
+    const infoSize = document.getElementById('infoSize');
+    const infoSheets = document.getElementById('infoSheets');
+    const infoActiveSheet = document.getElementById('infoActiveSheet');
+    const infoRows = document.getElementById('infoRows');
+    const infoCols = document.getElementById('infoCols');
+
+    const statsContainer = document.getElementById('statsContainer');
+    const tableHead = document.getElementById('tableHead');
+    const tableBody = document.getElementById('tableBody');
+    const previewInfo = document.getElementById('previewInfo');
+
+    let workbook = null;
+    let currentSheetName = null;
+
+    // Handle visible label click to open file dialog
+    document.querySelector('label[for="fileInput"]').addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', handleFile);
+
+    function handleFile(event) {
+      const file = event.target.files[0];
+      resetUI();
+
+      if (!file) {
+        return;
+      }
+
+      if (!file.name.endsWith('.xlsx')) {
+        showError('Please upload a .xlsx file.');
+        return;
+      }
+
+      fileError.classList.add('hidden');
+      fileNameLabel.textContent = file.name;
+
+      infoName.textContent = file.name;
+      infoSize.textContent = formatFileSize(file.size);
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const data = new Uint8Array(e.target.result);
+        try {
+          workbook = XLSX.read(data, { type: 'array' });
+        } catch (err) {
+          showError('Failed to read Excel file. Make sure it is a valid .xlsx.');
+          console.error(err);
+          return;
+        }
+
+        const sheetNames = workbook.SheetNames || [];
+        infoSheets.textContent = sheetNames.length.toString();
+
+        if (sheetNames.length === 0) {
+          showError('No sheets found in this workbook.');
+          return;
+        }
+
+        // Populate sheet selector
+        sheetSelect.innerHTML = '';
+        sheetNames.forEach((name, index) => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          sheetSelect.appendChild(opt);
+        });
+        sheetSelect.disabled = false;
+
+        // Auto-select first sheet
+        currentSheetName = sheetNames[0];
+        sheetSelect.value = currentSheetName;
+        updateSheetData(currentSheetName);
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    sheetSelect.addEventListener('change', (e) => {
+      const sheetName = e.target.value;
+      if (!sheetName || !workbook) return;
+      currentSheetName = sheetName;
+      updateSheetData(sheetName);
+    });
+
+    function updateSheetData(sheetName) {
+      const sheet = workbook.Sheets[sheetName];
+      if (!sheet) return;
+
+      infoActiveSheet.textContent = sheetName;
+
+      // Convert sheet to JSON (array of objects)
+      const data = XLSX.utils.sheet_to_json(sheet, { defval: null });
+
+      // Update sheet info
+      const rowCount = data.length;
+      const headers = getHeadersFromSheet(sheet);
+
+      infoRows.textContent = rowCount.toString();
+      infoCols.textContent = headers.length.toString();
+
+      // Build table
+      buildTable(headers, data);
+
+      // Build stats
+      buildStats(headers, data);
+    }
+
+    function buildTable(headers, data) {
+      tableHead.innerHTML = '';
+      tableBody.innerHTML = '';
+
+      if (headers.length === 0) {
+        previewInfo.textContent = 'No columns detected';
+        return;
+      }
+
+      // Header row
+      const trHead = document.createElement('tr');
+      headers.forEach((h) => {
+        const th = document.createElement('th');
+        th.className = 'px-3 py-2 text-left font-semibold text-slate-700 border-b border-slate-200';
+        th.textContent = h;
+        trHead.appendChild(th);
+      });
+      tableHead.appendChild(trHead);
+
+      // Body rows (limit to 100)
+      const maxRows = 100;
+      const rowsToShow = data.slice(0, maxRows);
+      rowsToShow.forEach((row) => {
+        const tr = document.createElement('tr');
+        headers.forEach((h) => {
+          const td = document.createElement('td');
+          td.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
+          let value = row[h];
+          if (value === null || value === undefined) value = '';
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        tableBody.appendChild(tr);
+      });
+
+      previewInfo.textContent = `Showing first ${rowsToShow.length} rows (of ~${data.length})`;
+    }
+
+    function buildStats(headers, data) {
+      statsContainer.innerHTML = '';
+
+      if (data.length === 0) {
+        statsContainer.innerHTML = '<p class="text-slate-400 text-sm">No data rows found.</p>';
+        return;
+      }
+
+      // Detect numeric columns and compute stats
+      const numericCols = {};
+
+      headers.forEach((header) => {
+        let values = [];
+        data.forEach((row) => {
+          const raw = row[header];
+          const num = parseFloat(raw);
+          if (!isNaN(num) && isFinite(num)) {
+            values.push(num);
+          }
+        });
+
+        if (values.length > 0) {
+          const count = values.length;
+          const sum = values.reduce((a, b) => a + b, 0);
+          const min = Math.min(...values);
+          const max = Math.max(...values);
+          const avg = sum / count;
+
+          numericCols[header] = { count, sum, min, max, avg };
+        }
+      });
+
+      const keys = Object.keys(numericCols);
+      if (keys.length === 0) {
+        statsContainer.innerHTML =
+          '<p class="text-slate-400 text-sm">No numeric columns detected to calculate stats.</p>';
+        return;
+      }
+
+      keys.forEach((col) => {
+        const stats = numericCols[col];
+        const card = document.createElement('div');
+        card.className =
+          'border border-slate-200 rounded-xl p-3 hover:border-slate-400 transition';
+
+        card.innerHTML = `
+          <p class="text-sm font-semibold text-slate-800 mb-1">${escapeHTML(col)}</p>
+          <div class="grid grid-cols-2 gap-1 text-xs text-slate-600">
+            <p><span class="font-medium">Count:</span> ${stats.count}</p>
+            <p><span class="font-medium">Sum:</span> ${formatNumber(stats.sum)}</p>
+            <p><span class="font-medium">Min:</span> ${formatNumber(stats.min)}</p>
+            <p><span class="font-medium">Max:</span> ${formatNumber(stats.max)}</p>
+            <p><span class="font-medium">Avg:</span> ${formatNumber(stats.avg)}</p>
+          </div>
+        `;
+        statsContainer.appendChild(card);
+      });
+    }
+
+    function getHeadersFromSheet(sheet) {
+      // Use SheetJS to get header row
+      const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:A1');
+      const headers = [];
+      const firstRow = range.s.r; // start row index
+
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: firstRow, c: C });
+        const cell = sheet[cellAddress];
+        let header = cell && cell.v ? String(cell.v) : `Column ${C + 1}`;
+        headers.push(header);
+      }
+
+      return headers;
+    }
+
+    function formatFileSize(bytes) {
+      if (bytes === 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function formatNumber(num) {
+      if (num === null || num === undefined || isNaN(num)) return '—';
+      return Number(num).toLocaleString(undefined, {
+        maximumFractionDigits: 4,
+      });
+    }
+
+    function showError(msg) {
+      fileError.textContent = msg;
+      fileError.classList.remove('hidden');
+    }
+
+    function resetUI() {
+      fileError.classList.add('hidden');
+      fileError.textContent = '';
+
+      workbook = null;
+      currentSheetName = null;
+
+      sheetSelect.innerHTML = '<option value="">Upload a file first</option>';
+      sheetSelect.disabled = true;
+
+      infoName.textContent = '—';
+      infoSize.textContent = '—';
+      infoSheets.textContent = '—';
+      infoActiveSheet.textContent = '—';
+      infoRows.textContent = '—';
+      infoCols.textContent = '—';
+
+      statsContainer.innerHTML =
+        '<p class="text-slate-400 text-sm">Upload a file and select a sheet.</p>';
+
+      tableHead.innerHTML = '';
+      tableBody.innerHTML = '';
+      previewInfo.textContent = 'Showing first 0 rows';
+    }
+
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
