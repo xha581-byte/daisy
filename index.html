@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <title>Excel Analyst Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- SheetJS (XLSX) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 
-  <!-- Chart.js for charts -->
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-slate-100 min-h-screen">
@@ -25,16 +25,16 @@
 
     <!-- Upload Card -->
     <div class="bg-white rounded-2xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold text-slate-900 mb-4">1. Upload your Excel file</h2>
+      <h2 class="text-xl font-semibold text-slate-900 mb-4">1. 上传 Excel 文件</h2>
       <label
         for="fileInput"
         class="flex items-center justify-between gap-4 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 cursor-pointer hover:border-slate-500 transition"
       >
         <div>
-          <p class="font-medium text-slate-800">Click to upload</p>
-          <p class="text-sm text-slate-500">Supported: .xlsx</p>
+          <p class="font-medium text-slate-800">点击上传</p>
+          <p class="text-sm text-slate-500">仅支持 .xlsx</p>
         </div>
-        <div class="text-sm text-slate-500" id="fileName">No file selected</div>
+        <div class="text-sm text-slate-500" id="fileName">未选择文件</div>
       </label>
       <input type="file" id="fileInput" accept=".xlsx" class="hidden" />
       <p id="fileError" class="mt-2 text-sm text-red-600 hidden"></p>
@@ -43,37 +43,37 @@
     <!-- Sheet & Info -->
     <div class="grid md:grid-cols-3 gap-6 mb-6">
       <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">2. Sheet selection</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">2. 工作表选择</h2>
         <label class="block text-sm font-medium text-slate-700 mb-2" for="sheetSelect">
-          Choose sheet
+          选择 Sheet
         </label>
         <select
           id="sheetSelect"
           class="w-full rounded-lg border-slate-300 text-sm"
           disabled
         >
-          <option value="">Upload a file first</option>
+          <option value="">先上传文件</option>
         </select>
         <p class="mt-3 text-xs text-slate-500">
-          After uploading, select the sheet you want to analyze.
+          上传后选择要分析的工作表。
         </p>
       </div>
 
       <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">File info</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">文件信息</h2>
         <div class="space-y-2 text-sm text-slate-700">
-          <p><span class="font-medium">Name:</span> <span id="infoName">—</span></p>
-          <p><span class="font-medium">Size:</span> <span id="infoSize">—</span></p>
-          <p><span class="font-medium">Total sheets:</span> <span id="infoSheets">—</span></p>
+          <p><span class="font-medium">名称:</span> <span id="infoName">—</span></p>
+          <p><span class="font-medium">大小:</span> <span id="infoSize">—</span></p>
+          <p><span class="font-medium">Sheet 数:</span> <span id="infoSheets">—</span></p>
         </div>
       </div>
 
       <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">Sheet info</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">当前 Sheet 信息</h2>
         <div class="space-y-2 text-sm text-slate-700">
-          <p><span class="font-medium">Active sheet:</span> <span id="infoActiveSheet">—</span></p>
-          <p><span class="font-medium">Rows (approx):</span> <span id="infoRows">—</span></p>
-          <p><span class="font-medium">Columns:</span> <span id="infoCols">—</span></p>
+          <p><span class="font-medium">Active Sheet:</span> <span id="infoActiveSheet">—</span></p>
+          <p><span class="font-medium">行数(约):</span> <span id="infoRows">—</span></p>
+          <p><span class="font-medium">列数:</span> <span id="infoCols">—</span></p>
         </div>
       </div>
     </div>
@@ -82,24 +82,24 @@
     <div class="grid md:grid-cols-2 gap-6 mb-6">
       <!-- Filters -->
       <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. Filters (按值筛选)</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. 筛选 (Filter)</h2>
         <p class="text-xs text-slate-500 mb-3">
-          Filter rows by column and value. Works on the data before grouping & charts.
+          按列值筛选行，筛选结果会影响后面的分组统计和图表。
         </p>
         <div class="space-y-3 text-sm">
           <div>
             <label class="block text-xs font-medium text-slate-700 mb-1" for="filterColumnSelect">
-              Column
+              列 (Column)
             </label>
             <select id="filterColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-              <option value="">(All rows, no filter)</option>
+              <option value="">(不过滤，使用全部)</option>
             </select>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-medium text-slate-700 mb-1" for="filterOperatorSelect">
-                Operator
+                条件
               </label>
               <select id="filterOperatorSelect" class="w-full rounded-lg border-slate-300 text-sm">
                 <option value="contains">contains (包含)</option>
@@ -112,13 +112,13 @@
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-700 mb-1" for="filterValueInput">
-                Value
+                值
               </label>
               <input
                 id="filterValueInput"
                 type="text"
                 class="w-full rounded-lg border-slate-300 text-sm"
-                placeholder="eg: 100 or VIP"
+                placeholder="例如: 100 或 VIP"
               />
             </div>
           </div>
@@ -128,64 +128,64 @@
               id="applyFilterBtn"
               class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
             >
-              Apply filter
+              应用筛选
             </button>
             <button
               id="resetFilterBtn"
               class="px-3 py-2 rounded-lg text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50"
             >
-              Reset
+              重置
             </button>
           </div>
 
           <p id="filterInfo" class="text-xs text-slate-500 mt-1">
-            No filter applied. Using all rows.
+            当前无筛选，使用全部数据。
           </p>
         </div>
       </div>
 
       <!-- Group & Chart -->
       <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">
-          4. Group-by & Charts（首充人数 / 首充金额）
+        <h2 class="text-lg font-semibold text-slate-900 mb-1">
+          4. 分组统计 & 图表
         </h2>
         <p class="text-xs text-slate-500 mb-3">
-          Group your data by one column, calculate Count(人数) or Sum(金额), then visualize.
+          按渠道等字段分组，可看：首充人数、首充金额、ARPU、注册率、首充转化率等。
         </p>
 
         <div class="space-y-3 text-sm">
           <div>
             <label class="block text-xs font-medium text-slate-700 mb-1" for="groupColumnSelect">
-              Group-by column（分组字段）
+              Group-by 列（比如：渠道）
             </label>
             <select id="groupColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-              <option value="">(Choose column)</option>
+              <option value="">(选择分组列)</option>
             </select>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
             <div>
               <label class="block text-xs font-medium text-slate-700 mb-1" for="metricColumnSelect">
-                Metric column（金额字段，可选）
+                指标字段 (Metric)
               </label>
               <select id="metricColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-                <option value="">(Only use Count)</option>
+                <option value="">(只看 Count 行数)</option>
               </select>
             </div>
             <div>
               <label class="block text-xs font-medium text-slate-700 mb-1" for="metricTypeSelect">
-                Metric type
+                指标类型
               </label>
               <select id="metricTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
-                <option value="count">Count 行数 = 首充人数</option>
-                <option value="sum">Sum 数值 = 首充金额</option>
+                <option value="count">Count 行数 = 人数</option>
+                <option value="sum">Sum 数值 = 金额/总和</option>
               </select>
             </div>
           </div>
 
           <div>
             <label class="block text-xs font-medium text-slate-700 mb-1" for="chartTypeSelect">
-              Chart type
+              图表类型
             </label>
             <select id="chartTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
               <option value="bar">Bar</option>
@@ -199,25 +199,25 @@
               id="runGroupBtn"
               class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
             >
-              Run Group & Chart
+              运行分组 & 生成图表
             </button>
           </div>
         </div>
 
         <div class="mt-4">
-          <p class="text-xs font-medium text-slate-700 mb-1">Group result (Top groups)</p>
+          <p class="text-xs font-medium text-slate-700 mb-1">分组结果 (Top Groups)</p>
           <div
             id="groupResultContainer"
             class="border border-slate-200 rounded-xl max-h-40 overflow-auto text-xs"
           >
-            <p class="text-slate-400 text-xs p-3">No group yet. Choose columns and click run.</p>
+            <p class="text-slate-400 text-xs p-3">暂无分组结果，先选择参数再点击运行。</p>
           </div>
         </div>
 
         <div class="mt-4">
-          <p class="text-xs font-medium text-slate-700 mb-1">Chart</p>
-          <div class="border border-slate-200 rounded-xl p-2">
-            <canvas id="chartCanvas" height="200"></canvas>
+          <p class="text-xs font-medium text-slate-700 mb-1">图表</p>
+          <div class="border border-slate-200 rounded-xl p-2 h-56">
+            <canvas id="chartCanvas"></canvas>
           </div>
         </div>
       </div>
@@ -227,19 +227,19 @@
     <div class="grid lg:grid-cols-3 gap-6">
       <!-- Stats -->
       <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">5. Column statistics</h2>
+        <h2 class="text-lg font-semibold text-slate-900 mb-4">5. 数值列统计</h2>
         <p class="text-xs text-slate-500 mb-3">
-          Numeric columns only. Count, min, max, sum, average (based on filtered data).
+          基于「筛选后的数据」对数值列做 Count / Min / Max / Sum / Avg。
         </p>
         <div id="statsContainer" class="space-y-3 text-sm text-slate-700">
-          <p class="text-slate-400 text-sm">Upload a file and select a sheet.</p>
+          <p class="text-slate-400 text-sm">上传文件并选择 Sheet 后查看。</p>
         </div>
       </div>
 
       <!-- Table preview -->
       <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
         <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-slate-900">6. Data preview</h2>
+          <h2 class="text-lg font-semibold text-slate-900">6. 数据预览</h2>
           <p class="text-xs text-slate-500" id="previewInfo">Showing first 0 rows</p>
         </div>
         <div class="overflow-auto max-h-[500px] border border-slate-200 rounded-xl">
@@ -292,7 +292,7 @@
     let currentHeaders = [];
     let chartInstance = null;
 
-    // Open file dialog when label clicked
+    // 点击卡片触发文件选择
     document.querySelector('label[for="fileInput"]').addEventListener('click', () => {
       fileInput.click();
     });
@@ -317,6 +317,12 @@
       runGroupAndChart();
     });
 
+    function getNumeric(value) {
+      const num = parseFloat(value);
+      if (isNaN(num) || !isFinite(num)) return 0;
+      return num;
+    }
+
     function handleFile(event) {
       const file = event.target.files[0];
       resetUI();
@@ -326,7 +332,7 @@
       }
 
       if (!file.name.endsWith('.xlsx')) {
-        showError('Please upload a .xlsx file.');
+        showError('请上传 .xlsx 文件');
         return;
       }
 
@@ -337,12 +343,12 @@
       infoSize.textContent = formatFileSize(file.size);
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const data = new Uint8Array(e.target.result);
         try {
           workbook = XLSX.read(data, { type: 'array' });
         } catch (err) {
-          showError('Failed to read Excel file. Make sure it is a valid .xlsx.');
+          showError('解析 Excel 失败，请检查文件是否正常。');
           console.error(err);
           return;
         }
@@ -351,11 +357,11 @@
         infoSheets.textContent = sheetNames.length.toString();
 
         if (sheetNames.length === 0) {
-          showError('No sheets found in this workbook.');
+          showError('工作簿中没有 Sheet。');
           return;
         }
 
-        // Populate sheet selector
+        // 填充 sheet 下拉
         sheetSelect.innerHTML = '';
         sheetNames.forEach((name) => {
           const opt = document.createElement('option');
@@ -365,7 +371,7 @@
         });
         sheetSelect.disabled = false;
 
-        // Auto-select first sheet
+        // 默认选第一个
         currentSheetName = sheetNames[0];
         sheetSelect.value = currentSheetName;
         updateSheetData(currentSheetName);
@@ -379,29 +385,22 @@
 
       infoActiveSheet.textContent = sheetName;
 
-      // Convert sheet to JSON (array of objects)
       const data = XLSX.utils.sheet_to_json(sheet, { defval: null });
 
       originalData = data;
       filteredData = [...originalData];
 
-      // Headers
       const headers = getHeadersFromSheet(sheet);
       currentHeaders = headers;
 
-      const rowCount = filteredData.length;
-      infoRows.textContent = rowCount.toString();
+      infoRows.textContent = filteredData.length.toString();
       infoCols.textContent = headers.length.toString();
 
-      // Populate dynamic selectors
       populateDynamicSelectors(headers);
-
-      // Build views based on filtered data
       buildTable(headers, filteredData);
       buildStats(headers, filteredData);
 
-      // Reset filter text
-      filterInfo.textContent = 'No filter applied. Using all rows.';
+      filterInfo.textContent = '当前无筛选，使用全部数据。';
     }
 
     function buildTable(headers, data) {
@@ -413,17 +412,16 @@
         return;
       }
 
-      // Header row
       const trHead = document.createElement('tr');
       headers.forEach((h) => {
         const th = document.createElement('th');
-        th.className = 'px-3 py-2 text-left font-semibold text-slate-700 border-b border-slate-200';
+        th.className =
+          'px-3 py-2 text-left font-semibold text-slate-700 border-b border-slate-200';
         th.textContent = h;
         trHead.appendChild(th);
       });
       tableHead.appendChild(trHead);
 
-      // Body rows (limit to 100)
       const maxRows = 100;
       const rowsToShow = data.slice(0, maxRows);
       rowsToShow.forEach((row) => {
@@ -453,10 +451,9 @@
       const numericCols = {};
 
       headers.forEach((header) => {
-        let values = [];
+        const values = [];
         data.forEach((row) => {
-          const raw = row[header];
-          const num = parseFloat(raw);
+          const num = parseFloat(row[header]);
           if (!isNaN(num) && isFinite(num)) {
             values.push(num);
           }
@@ -468,7 +465,6 @@
           const min = Math.min(...values);
           const max = Math.max(...values);
           const avg = sum / count;
-
           numericCols[header] = { count, sum, min, max, avg };
         }
       });
@@ -502,7 +498,7 @@
 
     function populateDynamicSelectors(headers) {
       // Filter column
-      filterColumnSelect.innerHTML = '<option value="">(All rows, no filter)</option>';
+      filterColumnSelect.innerHTML = '<option value="">(不过滤，使用全部)</option>';
       headers.forEach((h) => {
         const opt = document.createElement('option');
         opt.value = h;
@@ -510,8 +506,8 @@
         filterColumnSelect.appendChild(opt);
       });
 
-      // Group-by column
-      groupColumnSelect.innerHTML = '<option value="">(Choose column)</option>';
+      // Group-by
+      groupColumnSelect.innerHTML = '<option value="">(选择分组列)</option>';
       headers.forEach((h) => {
         const opt = document.createElement('option');
         opt.value = h;
@@ -519,14 +515,59 @@
         groupColumnSelect.appendChild(opt);
       });
 
-      // Metric column
-      metricColumnSelect.innerHTML = '<option value="">(Only use Count)</option>';
+      // Metric
+      metricColumnSelect.innerHTML = '<option value="">(只看 Count 行数)</option>';
       headers.forEach((h) => {
         const opt = document.createElement('option');
         opt.value = h;
         opt.textContent = h;
         metricColumnSelect.appendChild(opt);
       });
+
+      // 下面是基于你这张表的「智能指标」：
+      const hasDirectFirstUsers = headers.includes('直推首充人数');
+      const hasFissionFirstUsers = headers.includes('裂变首充人数');
+      const hasDirectFirstAmt = headers.includes('直推首充金额');
+      const hasFissionFirstAmt = headers.includes('裂变首充金额');
+      const hasVisit = headers.includes('访问人数');
+      const hasReg = headers.includes('直推注册人数');
+
+      // 首充人数合计
+      if (hasDirectFirstUsers || hasFissionFirstUsers) {
+        const opt = document.createElement('option');
+        opt.value = '__首充人数合计__';
+        opt.textContent = '首充人数合计(直推+裂变)';
+        metricColumnSelect.appendChild(opt);
+      }
+      // 首充金额合计
+      if (hasDirectFirstAmt || hasFissionFirstAmt) {
+        const opt = document.createElement('option');
+        opt.value = '__首充金额合计__';
+        opt.textContent = '首充金额合计(直推+裂变)';
+        metricColumnSelect.appendChild(opt);
+      }
+      // ARPU / Funnel Rates
+      if (hasVisit && hasReg && (hasDirectFirstUsers || hasFissionFirstUsers) && (hasDirectFirstAmt || hasFissionFirstAmt)) {
+        const optArpu = document.createElement('option');
+        optArpu.value = '__ARPU__';
+        optArpu.textContent = '首充ARPU = 金额/首充人数';
+        metricColumnSelect.appendChild(optArpu);
+
+        const optRegRate = document.createElement('option');
+        optRegRate.value = '__注册率__';
+        optRegRate.textContent = '注册率 = 直推注册人数 / 访问人数';
+        metricColumnSelect.appendChild(optRegRate);
+
+        const optFirstRate = document.createElement('option');
+        optFirstRate.value = '__首充转化率__';
+        optFirstRate.textContent = '首充转化率 = 首充人数合计 / 访问人数';
+        metricColumnSelect.appendChild(optFirstRate);
+
+        const optFirstRegRate = document.createElement('option');
+        optFirstRegRate.value = '__首充注册转化率__';
+        optFirstRegRate.textContent = '首充注册转化率 = 首充人数合计 / 注册人数';
+        metricColumnSelect.appendChild(optFirstRegRate);
+      }
     }
 
     function applyFilter() {
@@ -537,25 +578,22 @@
       const val = filterValueInput.value.trim();
 
       if (!col || !op || !val) {
-        // No valid filter -> use all rows
         filteredData = [...originalData];
-        filterInfo.textContent = 'No filter applied. Using all rows.';
+        filterInfo.textContent = '当前无筛选，使用全部数据。';
       } else {
         filteredData = originalData.filter((row) => {
           const cell = row[col];
           return passesFilter(cell, op, val);
         });
-        filterInfo.textContent = `Filter applied on [${col}] with [${op} ${val}]. Rows: ${filteredData.length}`;
+        filterInfo.textContent = `已按 [${col}] 使用 [${op} ${val}] 筛选，行数：${filteredData.length}`;
       }
 
-      // Rebuild table & stats based on filtered data
       infoRows.textContent = filteredData.length.toString();
       buildTable(currentHeaders, filteredData);
       buildStats(currentHeaders, filteredData);
 
-      // Reset group result & chart when filter changes
       groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">Filter changed. Run group again.</p>';
+        '<p class="text-slate-400 text-xs p-3">筛选已改变，请重新运行分组。</p>';
       clearChart();
     }
 
@@ -564,14 +602,14 @@
       filterOperatorSelect.value = 'contains';
       filterValueInput.value = '';
       filteredData = [...originalData];
-      filterInfo.textContent = 'No filter applied. Using all rows.';
+      filterInfo.textContent = '当前无筛选，使用全部数据。';
 
       infoRows.textContent = filteredData.length.toString();
       buildTable(currentHeaders, filteredData);
       buildStats(currentHeaders, filteredData);
 
       groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">Filter reset. Run group again.</p>';
+        '<p class="text-slate-400 text-xs p-3">筛选已重置，请重新运行分组。</p>';
       clearChart();
     }
 
@@ -587,7 +625,6 @@
         return cellStr.toLowerCase() === valStr.toLowerCase();
       }
 
-      // Numeric compare
       const numCell = parseFloat(cellStr);
       const numVal = parseFloat(valStr);
       if (isNaN(numCell) || isNaN(numVal)) return false;
@@ -609,7 +646,7 @@
     function runGroupAndChart() {
       if (!filteredData || filteredData.length === 0) {
         groupResultContainer.innerHTML =
-          '<p class="text-slate-400 text-xs p-3">No data after filter.</p>';
+          '<p class="text-slate-400 text-xs p-3">筛选后无数据。</p>';
         clearChart();
         return;
       }
@@ -618,23 +655,40 @@
       const metricCol = metricColumnSelect.value;
       const metricType = metricTypeSelect.value;
 
+      const derivedMetrics = [
+        '__ARPU__',
+        '__注册率__',
+        '__首充转化率__',
+        '__首充注册转化率__'
+      ];
+
+      const isDerived = derivedMetrics.includes(metricCol);
+
       if (!groupCol) {
         groupResultContainer.innerHTML =
-          '<p class="text-red-500 text-xs p-3">Please choose a group-by column.</p>';
+          '<p class="text-red-500 text-xs p-3">请选择 Group-by 列。</p>';
         clearChart();
         return;
       }
 
-      if (metricType === 'sum' && !metricCol) {
+      if (metricType === 'sum' && !metricCol && !isDerived) {
         groupResultContainer.innerHTML =
-          '<p class="text-red-500 text-xs p-3">For Sum(金额) please choose a metric column.</p>';
+          '<p class="text-red-500 text-xs p-3">选择 Sum 时必须指定指标字段。</p>';
+        clearChart();
+        return;
+      }
+
+      if (metricType === 'sum' && metricCol === '') {
+        // count 模式没问题，sum 模式必须有字段
+        groupResultContainer.innerHTML =
+          '<p class="text-red-500 text-xs p-3">Sum 模式请指定一个指标字段。</p>';
         clearChart();
         return;
       }
 
       const groupData = computeGroupData(filteredData, groupCol, metricCol);
 
-      renderGroupTable(groupData);
+      renderGroupTable(groupData, metricCol, metricType);
       updateChart(groupData, groupCol, metricCol, metricType);
     }
 
@@ -648,36 +702,75 @@
 
         let entry = groups.get(key);
         if (!entry) {
-          entry = { group: key, count: 0, sum: 0 };
+          entry = {
+            group: key,
+            count: 0,
+            sum: 0,
+            visit: 0,
+            reg: 0,
+            firstUsers: 0,
+            firstAmount: 0
+          };
           groups.set(key, entry);
         }
 
         entry.count += 1;
 
+        // Funnel 基础字段累加
+        entry.visit += getNumeric(row['访问人数']);
+        entry.reg += getNumeric(row['直推注册人数']);
+
+        const directFirstUsers = getNumeric(row['直推首充人数']);
+        const fissionFirstUsers = getNumeric(row['裂变首充人数']);
+        const directFirstAmt = getNumeric(row['直推首充金额']);
+        const fissionFirstAmt = getNumeric(row['裂变首充金额']);
+
+        entry.firstUsers += directFirstUsers + fissionFirstUsers;
+        entry.firstAmount += directFirstAmt + fissionFirstAmt;
+
+        // Sum 指标
         if (metricCol) {
-          const raw = row[metricCol];
-          const num = parseFloat(raw);
-          if (!isNaN(num) && isFinite(num)) {
-            entry.sum += num;
+          let value = 0;
+
+          if (metricCol === '__首充人数合计__') {
+            value = directFirstUsers + fissionFirstUsers;
+          } else if (metricCol === '__首充金额合计__') {
+            value = directFirstAmt + fissionFirstAmt;
+          } else if (
+            metricCol === '__ARPU__' ||
+            metricCol === '__注册率__' ||
+            metricCol === '__首充转化率__' ||
+            metricCol === '__首充注册转化率__'
+          ) {
+            // 这些是衍生指标，不用 sum 字段
+            value = 0;
+          } else {
+            value = getNumeric(row[metricCol]);
           }
+
+          entry.sum += value;
         }
       });
 
       const arr = Array.from(groups.values());
 
-      // sort: by sum if metricCol & sum type, else by count
       arr.sort((a, b) => {
-        if (metricCol) {
+        if (
+          metricCol &&
+          metricCol !== '__ARPU__' &&
+          metricCol !== '__注册率__' &&
+          metricCol !== '__首充转化率__' &&
+          metricCol !== '__首充注册转化率__'
+        ) {
           return b.sum - a.sum;
         }
         return b.count - a.count;
       });
 
-      // Optional: limit to top 50 groups
       return arr.slice(0, 50);
     }
 
-    function renderGroupTable(groupData) {
+    function renderGroupTable(groupData, metricCol, metricType) {
       groupResultContainer.innerHTML = '';
 
       if (!groupData || groupData.length === 0) {
@@ -686,7 +779,12 @@
         return;
       }
 
-      const hasSum = metricColumnSelect.value !== '';
+      const isUsersTotal = metricCol === '__首充人数合计__';
+      const isAmountTotal = metricCol === '__首充金额合计__';
+      const isARPU = metricCol === '__ARPU__';
+      const isRegRate = metricCol === '__注册率__';
+      const isFirstRate = metricCol === '__首充转化率__';
+      const isFirstRegRate = metricCol === '__首充注册转化率__';
 
       const table = document.createElement('table');
       table.className = 'min-w-full text-xs';
@@ -695,13 +793,36 @@
       thead.className = 'bg-slate-50';
       const trh = document.createElement('tr');
 
-      const headers = ['Group 值', '首充人数 (Count)'];
-      if (hasSum) headers.push('首充金额 (Sum)');
+      const headers = [
+        { key: 'group', label: 'Group 值' },
+        { key: 'count', label: '行数 (Count)' }
+      ];
+
+      if (metricCol && metricType === 'sum' && !isARPU && !isRegRate && !isFirstRate && !isFirstRegRate) {
+        let label = `${metricCol} Sum`;
+        if (isUsersTotal) label = '首充人数合计(直推+裂变)';
+        if (isAmountTotal) label = '首充金额合计(直推+裂变)';
+        headers.push({ key: 'sum', label });
+      }
+
+      if (isARPU) {
+        headers.push({ key: 'arpu', label: '首充ARPU = 金额/首充人数' });
+      }
+      if (isRegRate) {
+        headers.push({ key: 'regRate', label: '注册率 = 注册/访问' });
+      }
+      if (isFirstRate) {
+        headers.push({ key: 'firstRate', label: '首充转化率 = 首充人数/访问' });
+      }
+      if (isFirstRegRate) {
+        headers.push({ key: 'firstRegRate', label: '首充注册转化率 = 首充人数/注册' });
+      }
 
       headers.forEach((h) => {
         const th = document.createElement('th');
-        th.className = 'px-3 py-1 text-left font-semibold text-slate-700 border-b border-slate-200';
-        th.textContent = h;
+        th.className =
+          'px-3 py-1 text-left font-semibold text-slate-700 border-b border-slate-200';
+        th.textContent = h.label;
         trh.appendChild(th);
       });
       thead.appendChild(trh);
@@ -711,22 +832,31 @@
       groupData.forEach((g) => {
         const tr = document.createElement('tr');
 
-        const tdGroup = document.createElement('td');
-        tdGroup.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
-        tdGroup.textContent = g.group;
-        tr.appendChild(tdGroup);
+        headers.forEach((h) => {
+          const td = document.createElement('td');
+          td.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
 
-        const tdCount = document.createElement('td');
-        tdCount.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
-        tdCount.textContent = g.count;
-        tr.appendChild(tdCount);
+          let value = '';
+          if (h.key === 'group') value = g.group;
+          else if (h.key === 'count') value = g.count;
+          else if (h.key === 'sum') value = formatNumber(g.sum);
+          else if (h.key === 'arpu') {
+            const arpu = g.firstUsers > 0 ? g.firstAmount / g.firstUsers : 0;
+            value = formatNumber(arpu);
+          } else if (h.key === 'regRate') {
+            const rate = g.visit > 0 ? g.reg / g.visit : 0;
+            value = (rate * 100).toFixed(2) + '%';
+          } else if (h.key === 'firstRate') {
+            const rate = g.visit > 0 ? g.firstUsers / g.visit : 0;
+            value = (rate * 100).toFixed(2) + '%';
+          } else if (h.key === 'firstRegRate') {
+            const rate = g.reg > 0 ? g.firstUsers / g.reg : 0;
+            value = (rate * 100).toFixed(2) + '%';
+          }
 
-        if (hasSum) {
-          const tdSum = document.createElement('td');
-          tdSum.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
-          tdSum.textContent = formatNumber(g.sum);
-          tr.appendChild(tdSum);
-        }
+          td.textContent = value;
+          tr.appendChild(td);
+        });
 
         tbody.appendChild(tr);
       });
@@ -742,15 +872,46 @@
       const chartType = chartTypeSelect.value || 'bar';
 
       const labels = groupData.map((g) => g.group);
-      let values;
-      let labelText;
+      let values = [];
+      let labelText = '';
 
-      if (metricType === 'sum' && metricCol) {
+      const isUsersTotal = metricCol === '__首充人数合计__';
+      const isAmountTotal = metricCol === '__首充金额合计__';
+      const isARPU = metricCol === '__ARPU__';
+      const isRegRate = metricCol === '__注册率__';
+      const isFirstRate = metricCol === '__首充转化率__';
+      const isFirstRegRate = metricCol === '__首充注册转化率__';
+
+      if (isARPU) {
+        values = groupData.map((g) =>
+          g.firstUsers > 0 ? g.firstAmount / g.firstUsers : 0
+        );
+        labelText = '首充ARPU (金额/首充人数)';
+      } else if (isRegRate) {
+        values = groupData.map((g) => (g.visit > 0 ? g.reg / g.visit : 0));
+        labelText = '注册率 (注册/访问)';
+      } else if (isFirstRate) {
+        values = groupData.map((g) =>
+          g.visit > 0 ? g.firstUsers / g.visit : 0
+        );
+        labelText = '首充转化率 (首充人数/访问)';
+      } else if (isFirstRegRate) {
+        values = groupData.map((g) =>
+          g.reg > 0 ? g.firstUsers / g.reg : 0
+        );
+        labelText = '首充注册转化率 (首充人数/注册)';
+      } else if (metricType === 'sum' && metricCol) {
         values = groupData.map((g) => g.sum);
-        labelText = `${metricCol} Sum (首充金额)`;
+        if (isUsersTotal) {
+          labelText = '首充人数合计(直推+裂变)';
+        } else if (isAmountTotal) {
+          labelText = '首充金额合计(直推+裂变)';
+        } else {
+          labelText = `${metricCol} Sum`;
+        }
       } else {
         values = groupData.map((g) => g.count);
-        labelText = `Count of ${groupCol} (首充人数)`;
+        labelText = `Count of ${groupCol}`;
       }
 
       const ctx = chartCanvas.getContext('2d');
@@ -769,9 +930,7 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: true,
-            },
+            legend: { display: true },
           },
           scales:
             chartType === 'pie'
@@ -806,7 +965,7 @@
       for (let C = range.s.c; C <= range.e.c; ++C) {
         const cellAddress = XLSX.utils.encode_cell({ r: firstRow, c: C });
         const cell = sheet[cellAddress];
-        let header = cell && cell.v ? String(cell.v) : `Column ${C + 1}`;
+        const header = cell && cell.v ? String(cell.v) : `Column ${C + 1}`;
         headers.push(header);
       }
 
@@ -843,7 +1002,7 @@
       filteredData = [];
       currentHeaders = [];
 
-      sheetSelect.innerHTML = '<option value="">Upload a file first</option>';
+      sheetSelect.innerHTML = '<option value="">先上传文件</option>';
       sheetSelect.disabled = true;
 
       infoName.textContent = '—';
@@ -854,19 +1013,19 @@
       infoCols.textContent = '—';
 
       statsContainer.innerHTML =
-        '<p class="text-slate-400 text-sm">Upload a file and select a sheet.</p>';
+        '<p class="text-slate-400 text-sm">上传文件并选择 Sheet 后查看。</p>';
 
       tableHead.innerHTML = '';
       tableBody.innerHTML = '';
       previewInfo.textContent = 'Showing first 0 rows';
 
-      filterColumnSelect.innerHTML = '<option value="">(All rows, no filter)</option>';
-      metricColumnSelect.innerHTML = '<option value="">(Only use Count)</option>';
-      groupColumnSelect.innerHTML = '<option value="">(Choose column)</option>';
-      filterInfo.textContent = 'No filter applied. Using all rows.';
+      filterColumnSelect.innerHTML = '<option value="">(不过滤，使用全部)</option>';
+      metricColumnSelect.innerHTML = '<option value="">(只看 Count 行数)</option>';
+      groupColumnSelect.innerHTML = '<option value="">(选择分组列)</option>';
+      filterInfo.textContent = '当前无筛选，使用全部数据。';
 
       groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">No group yet. Choose columns and click run.</p>';
+        '<p class="text-slate-400 text-xs p-3">暂无分组结果，先选择参数再点击运行。</p>';
       clearChart();
     }
 
@@ -874,7 +1033,7 @@
       return String(str)
         .replace(/&/g, '&amp;')
         .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;/')
+        .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
     }
