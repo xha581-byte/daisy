@@ -1,1042 +1,730 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8" />
-  <title>Excel Analyst Panel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Multi-Pixel Activator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --tg-bg-main: #f4f6f9;
+            --tg-surface: #ffffff;
+            --tg-primary: #0f172a; /* 深邃邃蓝，更显专业 */
+            --tg-accent-cyan: #06b6d4;
+            --tg-accent-pink: #f43f5e;
+            --tg-text-main: #1e293b;
+            --tg-text-muted: #64748b;
+            --tg-border: #e2e8f0;
+            --tg-success: #10b981;
+            --tg-danger: #ef4444;
+        }
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+        body {
+            background-color: var(--tg-bg-main);
+            color: var(--tg-text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 0.95rem;
+        }
 
-  <!-- SheetJS (XLSX) -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        /* 顶部导航与语言切换 */
+        .navbar-custom {
+            background-color: var(--tg-surface);
+            border-bottom: 1px solid var(--tg-border);
+            padding: 1rem 2rem;
+        }
 
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        .brand-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--tg-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 卡片重构：扁平化、高级阴影与微光流边 */
+        .premium-card {
+            background: var(--tg-surface);
+            border: 1px solid var(--tg-border);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: all 0.25s ease;
+            height: 100%;
+        }
+        
+        .premium-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header-custom {
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--tg-border);
+            font-weight: 600;
+            color: var(--tg-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-body-custom {
+            padding: 1.5rem;
+        }
+
+        /* 核心看板组件 */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card-mini {
+            background: var(--tg-surface);
+            border: 1px solid var(--tg-border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--tg-primary);
+            line-height: 1.2;
+            margin-top: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--tg-text-muted);
+            font-weight: 500;
+        }
+
+        /* 表单与输入精细化方案 */
+        .form-control-custom {
+            border: 1px solid var(--tg-border);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            background-color: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .form-control-custom:focus {
+            background-color: var(--tg-surface);
+            border-color: var(--tg-accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+            outline: none;
+        }
+
+        /* 动态像素网格 */
+        .pixel-monitor-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 0.25rem;
+        }
+
+        .pixel-status-node {
+            background: #f8fafc;
+            border: 1px solid var(--tg-border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* 各种按钮风格 */
+        .btn-premium-primary {
+            background: var(--tg-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-premium-primary:hover {
+            background: #1e293b;
+            transform: translateY(-1px);
+        }
+
+        .btn-premium-primary:disabled {
+            background: var(--tg-border);
+            color: var(--tg-text-muted);
+            transform: none;
+        }
+
+        /* 状态微章 */
+        .badge-dot {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-weight: 600;
+            padding: 0.25rem 0.625rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+        }
+
+        .bg-waiting { background: #f1f5f9; color: #475569; }
+        .bg-running { background: #e0f2fe; color: #0369a1; }
+        .bg-success-lite { background: #d1e7dd; color: #0f5132; }
+        .bg-danger-lite { background: #f8d7da; color: #842029; }
+
+        /* 历史表格设计 */
+        .table-premium {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .table-premium th {
+            background: #f8fafc;
+            color: var(--tg-text-muted);
+            padding: 0.85rem 1rem;
+            font-weight: 600;
+            text-align: left;
+            border-bottom: 1px solid var(--tg-border);
+        }
+
+        .table-premium td {
+            padding: 0.85rem 1rem;
+            border-bottom: 1px solid var(--tg-border);
+            color: var(--tg-text-main);
+        }
+    </style>
 </head>
-<body class="bg-slate-100 min-h-screen">
-  <div class="max-w-6xl mx-auto py-10 px-4">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-slate-900 mb-2">Excel Analyst Panel</h1>
-      <p class="text-slate-600">
-        Upload <span class="font-semibold">.xlsx</span> → Filter → Group → Charts.
-      </p>
-    </header>
+<body>
 
-    <!-- Upload Card -->
-    <div class="bg-white rounded-2xl shadow p-6 mb-6">
-      <h2 class="text-xl font-semibold text-slate-900 mb-4">1. 上传 Excel 文件</h2>
-      <label
-        for="fileInput"
-        class="flex items-center justify-between gap-4 border-2 border-dashed border-slate-300 rounded-xl px-4 py-6 cursor-pointer hover:border-slate-500 transition"
-      >
+    <nav class="navbar-custom d-flex justify-content-between align-items-center">
+        <div class="brand-title">
+            <i class="fab fa-tiktok text-dark"></i>
+            <span>TikTok Multi-Pixel Activator</span>
+        </div>
         <div>
-          <p class="font-medium text-slate-800">点击上传</p>
-          <p class="text-sm text-slate-500">仅支持 .xlsx</p>
-        </div>
-        <div class="text-sm text-slate-500" id="fileName">未选择文件</div>
-      </label>
-      <input type="file" id="fileInput" accept=".xlsx" class="hidden" />
-      <p id="fileError" class="mt-2 text-sm text-red-600 hidden"></p>
-    </div>
-
-    <!-- Sheet & Info -->
-    <div class="grid md:grid-cols-3 gap-6 mb-6">
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">2. 工作表选择</h2>
-        <label class="block text-sm font-medium text-slate-700 mb-2" for="sheetSelect">
-          选择 Sheet
-        </label>
-        <select
-          id="sheetSelect"
-          class="w-full rounded-lg border-slate-300 text-sm"
-          disabled
-        >
-          <option value="">先上传文件</option>
-        </select>
-        <p class="mt-3 text-xs text-slate-500">
-          上传后选择要分析的工作表。
-        </p>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">文件信息</h2>
-        <div class="space-y-2 text-sm text-slate-700">
-          <p><span class="font-medium">名称:</span> <span id="infoName">—</span></p>
-          <p><span class="font-medium">大小:</span> <span id="infoSize">—</span></p>
-          <p><span class="font-medium">Sheet 数:</span> <span id="infoSheets">—</span></p>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">当前 Sheet 信息</h2>
-        <div class="space-y-2 text-sm text-slate-700">
-          <p><span class="font-medium">Active Sheet:</span> <span id="infoActiveSheet">—</span></p>
-          <p><span class="font-medium">行数(约):</span> <span id="infoRows">—</span></p>
-          <p><span class="font-medium">列数:</span> <span id="infoCols">—</span></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Filter + Group & Chart -->
-    <div class="grid md:grid-cols-2 gap-6 mb-6">
-      <!-- Filters -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">3. 筛选 (Filter)</h2>
-        <p class="text-xs text-slate-500 mb-3">
-          按列值筛选行，筛选结果会影响后面的分组统计和图表。
-        </p>
-        <div class="space-y-3 text-sm">
-          <div>
-            <label class="block text-xs font-medium text-slate-700 mb-1" for="filterColumnSelect">
-              列 (Column)
-            </label>
-            <select id="filterColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-              <option value="">(不过滤，使用全部)</option>
+            <select class="form-select form-select-sm" id="langSelector" style="width: 120px; border-radius: 6px;">
+                <option value="zh">简体中文</option>
+                <option value="en">English</option>
             </select>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1" for="filterOperatorSelect">
-                条件
-              </label>
-              <select id="filterOperatorSelect" class="w-full rounded-lg border-slate-300 text-sm">
-                <option value="contains">contains (包含)</option>
-                <option value="equals">equals (等于)</option>
-                <option value=">">&gt;</option>
-                <option value="<">&lt;</option>
-                <option value=">=">&gt;=</option>
-                <option value="<=">&lt;=</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1" for="filterValueInput">
-                值
-              </label>
-              <input
-                id="filterValueInput"
-                type="text"
-                class="w-full rounded-lg border-slate-300 text-sm"
-                placeholder="例如: 100 或 VIP"
-              />
-            </div>
-          </div>
-
-          <div class="flex items-center gap-3 pt-2">
-            <button
-              id="applyFilterBtn"
-              class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
-            >
-              应用筛选
-            </button>
-            <button
-              id="resetFilterBtn"
-              class="px-3 py-2 rounded-lg text-xs font-medium border border-slate-300 text-slate-700 hover:bg-slate-50"
-            >
-              重置
-            </button>
-          </div>
-
-          <p id="filterInfo" class="text-xs text-slate-500 mt-1">
-            当前无筛选，使用全部数据。
-          </p>
         </div>
-      </div>
+    </nav>
 
-      <!-- Group & Chart -->
-      <div class="bg-white rounded-2xl shadow p-6">
-        <h2 class="text-lg font-semibold text-slate-900 mb-1">
-          4. 分组统计 & 图表
-        </h2>
-        <p class="text-xs text-slate-500 mb-3">
-          按渠道等字段分组，可看：首充人数、首充金额、ARPU、注册率、首充转化率等。
-        </p>
-
-        <div class="space-y-3 text-sm">
-          <div>
-            <label class="block text-xs font-medium text-slate-700 mb-1" for="groupColumnSelect">
-              Group-by 列（比如：渠道）
-            </label>
-            <select id="groupColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-              <option value="">(选择分组列)</option>
-            </select>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1" for="metricColumnSelect">
-                指标字段 (Metric)
-              </label>
-              <select id="metricColumnSelect" class="w-full rounded-lg border-slate-300 text-sm">
-                <option value="">(只看 Count 行数)</option>
-              </select>
+    <div class="container-fluid px-4 py-4">
+        <div class="stat-grid">
+            <div class="stat-card-mini">
+                <span class="stat-label" data-i18n="stat_total">Total Pixels / 总像素数</span>
+                <span class="stat-value" id="totalPixels">0</span>
             </div>
-            <div>
-              <label class="block text-xs font-medium text-slate-700 mb-1" for="metricTypeSelect">
-                指标类型
-              </label>
-              <select id="metricTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
-                <option value="count">Count 行数 = 人数</option>
-                <option value="sum">Sum 数值 = 金额/总和</option>
-              </select>
+            <div class="stat-card-mini">
+                <span class="stat-label" data-i18n="stat_active">Active Pixels / 已激活像素</span>
+                <span class="stat-value text-info" id="activePixels">0</span>
             </div>
-          </div>
-
-          <div>
-            <label class="block text-xs font-medium text-slate-700 mb-1" for="chartTypeSelect">
-              图表类型
-            </label>
-            <select id="chartTypeSelect" class="w-full rounded-lg border-slate-300 text-sm">
-              <option value="bar">Bar</option>
-              <option value="line">Line</option>
-              <option value="pie">Pie</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-3 pt-2">
-            <button
-              id="runGroupBtn"
-              class="px-3 py-2 rounded-lg text-xs font-medium bg-slate-900 text-white hover:bg-slate-800"
-            >
-              运行分组 & 生成图表
-            </button>
-          </div>
+            <div class="stat-card-mini">
+                <span class="stat-label" data-i18n="stat_events">Events Sent / 已发事件数</span>
+                <span class="stat-value text-purple" id="totalEvents">0</span>
+            </div>
+            <div class="stat-card-mini">
+                <span class="stat-label" data-i18n="stat_rate">Success Rate / 激活成功率</span>
+                <span class="stat-value text-success" id="successRate">100%</span>
+            </div>
         </div>
 
-        <div class="mt-4">
-          <p class="text-xs font-medium text-slate-700 mb-1">分组结果 (Top Groups)</p>
-          <div
-            id="groupResultContainer"
-            class="border border-slate-200 rounded-xl max-h-40 overflow-auto text-xs"
-          >
-            <p class="text-slate-400 text-xs p-3">暂无分组结果，先选择参数再点击运行。</p>
-          </div>
-        </div>
+        <div class="row g-4">
+            <div class="col-xl-6">
+                <div class="premium-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-sliders-h text-cyan"></i>
+                        <span data-i18n="card_config">Configuration / 配置中心</span>
+                    </div>
+                    <div class="card-body-custom">
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-medium" data-i18n="label_pixel_ids">Pixel IDs (Comma separated)</label>
+                            <textarea class="form-control form-control-custom" id="pixelIds" rows="3" placeholder="e.g. CM3C2F77SJN5G97J9UR0, A1B2C3D4E5F6G7H8I9J0"></textarea>
+                        </div>
 
-        <div class="mt-4">
-          <p class="text-xs font-medium text-slate-700 mb-1">图表</p>
-          <div class="border border-slate-200 rounded-xl p-2 h-56">
-            <canvas id="chartCanvas"></canvas>
-          </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-medium" data-i18n="label_links">Activation Links (One per line)</label>
+                            <textarea class="form-control form-control-custom" id="activationLinks" rows="3" placeholder="https://example.com/activate?id=CM3C2F77SJN5G97J9UR0"></textarea>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-sm-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="autoDetect" checked>
+                                    <label class="form-check-label text-secondary small" for="autoDetect" data-i18n="opt_autodetect">Auto-detect ID from link</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="parallelProcessing" checked>
+                                    <label class="form-check-label text-secondary small" for="parallelProcessing" data-i18n="opt_parallel">Parallel processing (Fast)</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="progress mb-3" style="height: 6px; border-radius: 10px;">
+                            <div id="progressBar" class="progress-bar bg-info" style="width: 0%"></div>
+                        </div>
+                        
+                        <div id="activationStatus" class="alert p-2.5 small mb-4 d-flex align-items-center gap-2" style="background: #f8fafc; border: 1px solid var(--tg-border)">
+                            <i class="fas fa-info-circle text-info"></i>
+                            <span id="statusText" data-i18n="status_idle">Awaiting activation configuration...</span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button id="activateButton" class="btn-premium-primary flex-grow-1">
+                                <i class="fas fa-bolt me-1"></i> <span data-i18n="btn_run">Execute Activation</span>
+                            </button>
+                            <button id="resetButton" class="btn btn-outline-secondary px-3" style="border-radius: 8px;">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="small text-secondary" data-i18n="batch_upload_title">TXT/CSV Batch Import</div>
+                                <button class="btn btn-link btn-sm p-0 text-decoration-none text-cyan" id="quickTest" data-i18n="btn_demo">Load Dummy Demo Data</button>
+                            </div>
+                            <div class="input-group input-group-sm mt-2">
+                                <input type="file" class="form-control" id="batchFile" accept=".txt,.csv">
+                                <button class="btn btn-outline-secondary" type="button" id="uploadBtn" data-i18n="btn_upload">Import</button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6">
+                <div class="premium-card">
+                    <div class="card-header-custom justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fas fa-desktop text-pink"></i>
+                            <span data-i18n="card_monitor">Real-time Grid Monitor / 实时监视器</span>
+                        </div>
+                    </div>
+                    <div class="card-body-custom">
+                        <div id="pixelGrid" class="pixel-monitor-grid">
+                            <div class="w-100 text-center py-5" id="noPixelsMessage">
+                                <i class="fas fa-folder-open fa-2x text-light mb-2" style="color:#cbd5e1 !important"></i>
+                                <p class="text-muted small" data-i18n="msg_empty">No pixel parsed yet. Please supply data in configuration pane.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 mt-2">
+                <div class="premium-card">
+                    <div class="card-header-custom">
+                        <i class="fas fa-history text-secondary"></i>
+                        <span data-i18n="card_history">Execution History Log / 激活审计日志</span>
+                    </div>
+                    <div class="table-responsive" style="max-height: 300px;">
+                        <table class="table-premium">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="th_time">Timestamp</th>
+                                    <th data-i18n="th_id">Pixel ID</th>
+                                    <th data-i18n="th_event">Triggering Events</th>
+                                    <th data-i18n="th_val">Value</th>
+                                    <th data-i18n="th_status">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historyTable">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
-      </div>
     </div>
 
-    <!-- Stats + Table -->
-    <div class="grid lg:grid-cols-3 gap-6">
-      <!-- Stats -->
-      <div class="bg-white rounded-2xl shadow p-6 lg:col-span-1">
-        <h2 class="text-lg font-semibold text-slate-900 mb-4">5. 数值列统计</h2>
-        <p class="text-xs text-slate-500 mb-3">
-          基于「筛选后的数据」对数值列做 Count / Min / Max / Sum / Avg。
-        </p>
-        <div id="statsContainer" class="space-y-3 text-sm text-slate-700">
-          <p class="text-slate-400 text-sm">上传文件并选择 Sheet 后查看。</p>
-        </div>
-      </div>
-
-      <!-- Table preview -->
-      <div class="bg-white rounded-2xl shadow p-6 lg:col-span-2">
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="text-lg font-semibold text-slate-900">6. 数据预览</h2>
-          <p class="text-xs text-slate-500" id="previewInfo">Showing first 0 rows</p>
-        </div>
-        <div class="overflow-auto max-h-[500px] border border-slate-200 rounded-xl">
-          <table class="min-w-full text-xs" id="dataTable">
-            <thead class="bg-slate-50" id="tableHead"></thead>
-            <tbody id="tableBody"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const fileInput = document.getElementById('fileInput');
-    const fileNameLabel = document.getElementById('fileName');
-    const fileError = document.getElementById('fileError');
-    const sheetSelect = document.getElementById('sheetSelect');
-
-    const infoName = document.getElementById('infoName');
-    const infoSize = document.getElementById('infoSize');
-    const infoSheets = document.getElementById('infoSheets');
-    const infoActiveSheet = document.getElementById('infoActiveSheet');
-    const infoRows = document.getElementById('infoRows');
-    const infoCols = document.getElementById('infoCols');
-
-    const statsContainer = document.getElementById('statsContainer');
-    const tableHead = document.getElementById('tableHead');
-    const tableBody = document.getElementById('tableBody');
-    const previewInfo = document.getElementById('previewInfo');
-
-    const filterColumnSelect = document.getElementById('filterColumnSelect');
-    const filterOperatorSelect = document.getElementById('filterOperatorSelect');
-    const filterValueInput = document.getElementById('filterValueInput');
-    const applyFilterBtn = document.getElementById('applyFilterBtn');
-    const resetFilterBtn = document.getElementById('resetFilterBtn');
-    const filterInfo = document.getElementById('filterInfo');
-
-    const groupColumnSelect = document.getElementById('groupColumnSelect');
-    const metricColumnSelect = document.getElementById('metricColumnSelect');
-    const metricTypeSelect = document.getElementById('metricTypeSelect');
-    const chartTypeSelect = document.getElementById('chartTypeSelect');
-    const runGroupBtn = document.getElementById('runGroupBtn');
-    const groupResultContainer = document.getElementById('groupResultContainer');
-    const chartCanvas = document.getElementById('chartCanvas');
-
-    let workbook = null;
-    let currentSheetName = null;
-    let originalData = [];
-    let filteredData = [];
-    let currentHeaders = [];
-    let chartInstance = null;
-
-    // 点击卡片触发文件选择
-    document.querySelector('label[for="fileInput"]').addEventListener('click', () => {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener('change', handleFile);
-    sheetSelect.addEventListener('change', (e) => {
-      const sheetName = e.target.value;
-      if (!sheetName || !workbook) return;
-      currentSheetName = sheetName;
-      updateSheetData(sheetName);
-    });
-
-    applyFilterBtn.addEventListener('click', () => {
-      applyFilter();
-    });
-
-    resetFilterBtn.addEventListener('click', () => {
-      resetFilter();
-    });
-
-    runGroupBtn.addEventListener('click', () => {
-      runGroupAndChart();
-    });
-
-    function getNumeric(value) {
-      const num = parseFloat(value);
-      if (isNaN(num) || !isFinite(num)) return 0;
-      return num;
-    }
-
-    function handleFile(event) {
-      const file = event.target.files[0];
-      resetUI();
-
-      if (!file) {
-        return;
-      }
-
-      if (!file.name.endsWith('.xlsx')) {
-        showError('请上传 .xlsx 文件');
-        return;
-      }
-
-      fileError.classList.add('hidden');
-      fileNameLabel.textContent = file.name;
-
-      infoName.textContent = file.name;
-      infoSize.textContent = formatFileSize(file.size);
-
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const data = new Uint8Array(e.target.result);
-        try {
-          workbook = XLSX.read(data, { type: 'array' });
-        } catch (err) {
-          showError('解析 Excel 失败，请检查文件是否正常。');
-          console.error(err);
-          return;
-        }
-
-        const sheetNames = workbook.SheetNames || [];
-        infoSheets.textContent = sheetNames.length.toString();
-
-        if (sheetNames.length === 0) {
-          showError('工作簿中没有 Sheet。');
-          return;
-        }
-
-        // 填充 sheet 下拉
-        sheetSelect.innerHTML = '';
-        sheetNames.forEach((name) => {
-          const opt = document.createElement('option');
-          opt.value = name;
-          opt.textContent = name;
-          sheetSelect.appendChild(opt);
-        });
-        sheetSelect.disabled = false;
-
-        // 默认选第一个
-        currentSheetName = sheetNames[0];
-        sheetSelect.value = currentSheetName;
-        updateSheetData(currentSheetName);
-      };
-      reader.readAsArrayBuffer(file);
-    }
-
-    function updateSheetData(sheetName) {
-      const sheet = workbook.Sheets[sheetName];
-      if (!sheet) return;
-
-      infoActiveSheet.textContent = sheetName;
-
-      const data = XLSX.utils.sheet_to_json(sheet, { defval: null });
-
-      originalData = data;
-      filteredData = [...originalData];
-
-      const headers = getHeadersFromSheet(sheet);
-      currentHeaders = headers;
-
-      infoRows.textContent = filteredData.length.toString();
-      infoCols.textContent = headers.length.toString();
-
-      populateDynamicSelectors(headers);
-      buildTable(headers, filteredData);
-      buildStats(headers, filteredData);
-
-      filterInfo.textContent = '当前无筛选，使用全部数据。';
-    }
-
-    function buildTable(headers, data) {
-      tableHead.innerHTML = '';
-      tableBody.innerHTML = '';
-
-      if (!headers || headers.length === 0) {
-        previewInfo.textContent = 'No columns detected';
-        return;
-      }
-
-      const trHead = document.createElement('tr');
-      headers.forEach((h) => {
-        const th = document.createElement('th');
-        th.className =
-          'px-3 py-2 text-left font-semibold text-slate-700 border-b border-slate-200';
-        th.textContent = h;
-        trHead.appendChild(th);
-      });
-      tableHead.appendChild(trHead);
-
-      const maxRows = 100;
-      const rowsToShow = data.slice(0, maxRows);
-      rowsToShow.forEach((row) => {
-        const tr = document.createElement('tr');
-        headers.forEach((h) => {
-          const td = document.createElement('td');
-          td.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
-          let value = row[h];
-          if (value === null || value === undefined) value = '';
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-        tableBody.appendChild(tr);
-      });
-
-      previewInfo.textContent = `Showing first ${rowsToShow.length} rows (of ~${data.length})`;
-    }
-
-    function buildStats(headers, data) {
-      statsContainer.innerHTML = '';
-
-      if (!data || data.length === 0) {
-        statsContainer.innerHTML = '<p class="text-slate-400 text-sm">No data rows found.</p>';
-        return;
-      }
-
-      const numericCols = {};
-
-      headers.forEach((header) => {
-        const values = [];
-        data.forEach((row) => {
-          const num = parseFloat(row[header]);
-          if (!isNaN(num) && isFinite(num)) {
-            values.push(num);
-          }
-        });
-
-        if (values.length > 0) {
-          const count = values.length;
-          const sum = values.reduce((a, b) => a + b, 0);
-          const min = Math.min(...values);
-          const max = Math.max(...values);
-          const avg = sum / count;
-          numericCols[header] = { count, sum, min, max, avg };
-        }
-      });
-
-      const keys = Object.keys(numericCols);
-      if (keys.length === 0) {
-        statsContainer.innerHTML =
-          '<p class="text-slate-400 text-sm">No numeric columns detected to calculate stats.</p>';
-        return;
-      }
-
-      keys.forEach((col) => {
-        const stats = numericCols[col];
-        const card = document.createElement('div');
-        card.className =
-          'border border-slate-200 rounded-xl p-3 hover:border-slate-400 transition';
-
-        card.innerHTML = `
-          <p class="text-sm font-semibold text-slate-800 mb-1">${escapeHTML(col)}</p>
-          <div class="grid grid-cols-2 gap-1 text-xs text-slate-600">
-            <p><span class="font-medium">Count:</span> ${stats.count}</p>
-            <p><span class="font-medium">Sum:</span> ${formatNumber(stats.sum)}</p>
-            <p><span class="font-medium">Min:</span> ${formatNumber(stats.min)}</p>
-            <p><span class="font-medium">Max:</span> ${formatNumber(stats.max)}</p>
-            <p><span class="font-medium">Avg:</span> ${formatNumber(stats.avg)}</p>
-          </div>
-        `;
-        statsContainer.appendChild(card);
-      });
-    }
-
-    function populateDynamicSelectors(headers) {
-      // Filter column
-      filterColumnSelect.innerHTML = '<option value="">(不过滤，使用全部)</option>';
-      headers.forEach((h) => {
-        const opt = document.createElement('option');
-        opt.value = h;
-        opt.textContent = h;
-        filterColumnSelect.appendChild(opt);
-      });
-
-      // Group-by
-      groupColumnSelect.innerHTML = '<option value="">(选择分组列)</option>';
-      headers.forEach((h) => {
-        const opt = document.createElement('option');
-        opt.value = h;
-        opt.textContent = h;
-        groupColumnSelect.appendChild(opt);
-      });
-
-      // Metric
-      metricColumnSelect.innerHTML = '<option value="">(只看 Count 行数)</option>';
-      headers.forEach((h) => {
-        const opt = document.createElement('option');
-        opt.value = h;
-        opt.textContent = h;
-        metricColumnSelect.appendChild(opt);
-      });
-
-      // 下面是基于你这张表的「智能指标」：
-      const hasDirectFirstUsers = headers.includes('直推首充人数');
-      const hasFissionFirstUsers = headers.includes('裂变首充人数');
-      const hasDirectFirstAmt = headers.includes('直推首充金额');
-      const hasFissionFirstAmt = headers.includes('裂变首充金额');
-      const hasVisit = headers.includes('访问人数');
-      const hasReg = headers.includes('直推注册人数');
-
-      // 首充人数合计
-      if (hasDirectFirstUsers || hasFissionFirstUsers) {
-        const opt = document.createElement('option');
-        opt.value = '__首充人数合计__';
-        opt.textContent = '首充人数合计(直推+裂变)';
-        metricColumnSelect.appendChild(opt);
-      }
-      // 首充金额合计
-      if (hasDirectFirstAmt || hasFissionFirstAmt) {
-        const opt = document.createElement('option');
-        opt.value = '__首充金额合计__';
-        opt.textContent = '首充金额合计(直推+裂变)';
-        metricColumnSelect.appendChild(opt);
-      }
-      // ARPU / Funnel Rates
-      if (hasVisit && hasReg && (hasDirectFirstUsers || hasFissionFirstUsers) && (hasDirectFirstAmt || hasFissionFirstAmt)) {
-        const optArpu = document.createElement('option');
-        optArpu.value = '__ARPU__';
-        optArpu.textContent = '首充ARPU = 金额/首充人数';
-        metricColumnSelect.appendChild(optArpu);
-
-        const optRegRate = document.createElement('option');
-        optRegRate.value = '__注册率__';
-        optRegRate.textContent = '注册率 = 直推注册人数 / 访问人数';
-        metricColumnSelect.appendChild(optRegRate);
-
-        const optFirstRate = document.createElement('option');
-        optFirstRate.value = '__首充转化率__';
-        optFirstRate.textContent = '首充转化率 = 首充人数合计 / 访问人数';
-        metricColumnSelect.appendChild(optFirstRate);
-
-        const optFirstRegRate = document.createElement('option');
-        optFirstRegRate.value = '__首充注册转化率__';
-        optFirstRegRate.textContent = '首充注册转化率 = 首充人数合计 / 注册人数';
-        metricColumnSelect.appendChild(optFirstRegRate);
-      }
-    }
-
-    function applyFilter() {
-      if (!originalData || originalData.length === 0) return;
-
-      const col = filterColumnSelect.value;
-      const op = filterOperatorSelect.value;
-      const val = filterValueInput.value.trim();
-
-      if (!col || !op || !val) {
-        filteredData = [...originalData];
-        filterInfo.textContent = '当前无筛选，使用全部数据。';
-      } else {
-        filteredData = originalData.filter((row) => {
-          const cell = row[col];
-          return passesFilter(cell, op, val);
-        });
-        filterInfo.textContent = `已按 [${col}] 使用 [${op} ${val}] 筛选，行数：${filteredData.length}`;
-      }
-
-      infoRows.textContent = filteredData.length.toString();
-      buildTable(currentHeaders, filteredData);
-      buildStats(currentHeaders, filteredData);
-
-      groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">筛选已改变，请重新运行分组。</p>';
-      clearChart();
-    }
-
-    function resetFilter() {
-      filterColumnSelect.value = '';
-      filterOperatorSelect.value = 'contains';
-      filterValueInput.value = '';
-      filteredData = [...originalData];
-      filterInfo.textContent = '当前无筛选，使用全部数据。';
-
-      infoRows.textContent = filteredData.length.toString();
-      buildTable(currentHeaders, filteredData);
-      buildStats(currentHeaders, filteredData);
-
-      groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">筛选已重置，请重新运行分组。</p>';
-      clearChart();
-    }
-
-    function passesFilter(cell, op, val) {
-      if (cell === null || cell === undefined) return false;
-      const cellStr = String(cell);
-      const valStr = String(val);
-
-      if (op === 'contains') {
-        return cellStr.toLowerCase().includes(valStr.toLowerCase());
-      }
-      if (op === 'equals') {
-        return cellStr.toLowerCase() === valStr.toLowerCase();
-      }
-
-      const numCell = parseFloat(cellStr);
-      const numVal = parseFloat(valStr);
-      if (isNaN(numCell) || isNaN(numVal)) return false;
-
-      switch (op) {
-        case '>':
-          return numCell > numVal;
-        case '<':
-          return numCell < numVal;
-        case '>=':
-          return numCell >= numVal;
-        case '<=':
-          return numCell <= numVal;
-        default:
-          return false;
-      }
-    }
-
-    function runGroupAndChart() {
-      if (!filteredData || filteredData.length === 0) {
-        groupResultContainer.innerHTML =
-          '<p class="text-slate-400 text-xs p-3">筛选后无数据。</p>';
-        clearChart();
-        return;
-      }
-
-      const groupCol = groupColumnSelect.value;
-      const metricCol = metricColumnSelect.value;
-      const metricType = metricTypeSelect.value;
-
-      const derivedMetrics = [
-        '__ARPU__',
-        '__注册率__',
-        '__首充转化率__',
-        '__首充注册转化率__'
-      ];
-
-      const isDerived = derivedMetrics.includes(metricCol);
-
-      if (!groupCol) {
-        groupResultContainer.innerHTML =
-          '<p class="text-red-500 text-xs p-3">请选择 Group-by 列。</p>';
-        clearChart();
-        return;
-      }
-
-      if (metricType === 'sum' && !metricCol && !isDerived) {
-        groupResultContainer.innerHTML =
-          '<p class="text-red-500 text-xs p-3">选择 Sum 时必须指定指标字段。</p>';
-        clearChart();
-        return;
-      }
-
-      if (metricType === 'sum' && metricCol === '') {
-        // count 模式没问题，sum 模式必须有字段
-        groupResultContainer.innerHTML =
-          '<p class="text-red-500 text-xs p-3">Sum 模式请指定一个指标字段。</p>';
-        clearChart();
-        return;
-      }
-
-      const groupData = computeGroupData(filteredData, groupCol, metricCol);
-
-      renderGroupTable(groupData, metricCol, metricType);
-      updateChart(groupData, groupCol, metricCol, metricType);
-    }
-
-    function computeGroupData(data, groupCol, metricCol) {
-      const groups = new Map();
-
-      data.forEach((row) => {
-        const keyRaw = row[groupCol];
-        const key =
-          keyRaw === null || keyRaw === undefined || keyRaw === '' ? '(空)' : String(keyRaw);
-
-        let entry = groups.get(key);
-        if (!entry) {
-          entry = {
-            group: key,
-            count: 0,
-            sum: 0,
-            visit: 0,
-            reg: 0,
-            firstUsers: 0,
-            firstAmount: 0
-          };
-          groups.set(key, entry);
-        }
-
-        entry.count += 1;
-
-        // Funnel 基础字段累加
-        entry.visit += getNumeric(row['访问人数']);
-        entry.reg += getNumeric(row['直推注册人数']);
-
-        const directFirstUsers = getNumeric(row['直推首充人数']);
-        const fissionFirstUsers = getNumeric(row['裂变首充人数']);
-        const directFirstAmt = getNumeric(row['直推首充金额']);
-        const fissionFirstAmt = getNumeric(row['裂变首充金额']);
-
-        entry.firstUsers += directFirstUsers + fissionFirstUsers;
-        entry.firstAmount += directFirstAmt + fissionFirstAmt;
-
-        // Sum 指标
-        if (metricCol) {
-          let value = 0;
-
-          if (metricCol === '__首充人数合计__') {
-            value = directFirstUsers + fissionFirstUsers;
-          } else if (metricCol === '__首充金额合计__') {
-            value = directFirstAmt + fissionFirstAmt;
-          } else if (
-            metricCol === '__ARPU__' ||
-            metricCol === '__注册率__' ||
-            metricCol === '__首充转化率__' ||
-            metricCol === '__首充注册转化率__'
-          ) {
-            // 这些是衍生指标，不用 sum 字段
-            value = 0;
-          } else {
-            value = getNumeric(row[metricCol]);
-          }
-
-          entry.sum += value;
-        }
-      });
-
-      const arr = Array.from(groups.values());
-
-      arr.sort((a, b) => {
-        if (
-          metricCol &&
-          metricCol !== '__ARPU__' &&
-          metricCol !== '__注册率__' &&
-          metricCol !== '__首充转化率__' &&
-          metricCol !== '__首充注册转化率__'
-        ) {
-          return b.sum - a.sum;
-        }
-        return b.count - a.count;
-      });
-
-      return arr.slice(0, 50);
-    }
-
-    function renderGroupTable(groupData, metricCol, metricType) {
-      groupResultContainer.innerHTML = '';
-
-      if (!groupData || groupData.length === 0) {
-        groupResultContainer.innerHTML =
-          '<p class="text-slate-400 text-xs p-3">No group result.</p>';
-        return;
-      }
-
-      const isUsersTotal = metricCol === '__首充人数合计__';
-      const isAmountTotal = metricCol === '__首充金额合计__';
-      const isARPU = metricCol === '__ARPU__';
-      const isRegRate = metricCol === '__注册率__';
-      const isFirstRate = metricCol === '__首充转化率__';
-      const isFirstRegRate = metricCol === '__首充注册转化率__';
-
-      const table = document.createElement('table');
-      table.className = 'min-w-full text-xs';
-
-      const thead = document.createElement('thead');
-      thead.className = 'bg-slate-50';
-      const trh = document.createElement('tr');
-
-      const headers = [
-        { key: 'group', label: 'Group 值' },
-        { key: 'count', label: '行数 (Count)' }
-      ];
-
-      if (metricCol && metricType === 'sum' && !isARPU && !isRegRate && !isFirstRate && !isFirstRegRate) {
-        let label = `${metricCol} Sum`;
-        if (isUsersTotal) label = '首充人数合计(直推+裂变)';
-        if (isAmountTotal) label = '首充金额合计(直推+裂变)';
-        headers.push({ key: 'sum', label });
-      }
-
-      if (isARPU) {
-        headers.push({ key: 'arpu', label: '首充ARPU = 金额/首充人数' });
-      }
-      if (isRegRate) {
-        headers.push({ key: 'regRate', label: '注册率 = 注册/访问' });
-      }
-      if (isFirstRate) {
-        headers.push({ key: 'firstRate', label: '首充转化率 = 首充人数/访问' });
-      }
-      if (isFirstRegRate) {
-        headers.push({ key: 'firstRegRate', label: '首充注册转化率 = 首充人数/注册' });
-      }
-
-      headers.forEach((h) => {
-        const th = document.createElement('th');
-        th.className =
-          'px-3 py-1 text-left font-semibold text-slate-700 border-b border-slate-200';
-        th.textContent = h.label;
-        trh.appendChild(th);
-      });
-      thead.appendChild(trh);
-      table.appendChild(thead);
-
-      const tbody = document.createElement('tbody');
-      groupData.forEach((g) => {
-        const tr = document.createElement('tr');
-
-        headers.forEach((h) => {
-          const td = document.createElement('td');
-          td.className = 'px-3 py-1 border-b border-slate-100 text-slate-700';
-
-          let value = '';
-          if (h.key === 'group') value = g.group;
-          else if (h.key === 'count') value = g.count;
-          else if (h.key === 'sum') value = formatNumber(g.sum);
-          else if (h.key === 'arpu') {
-            const arpu = g.firstUsers > 0 ? g.firstAmount / g.firstUsers : 0;
-            value = formatNumber(arpu);
-          } else if (h.key === 'regRate') {
-            const rate = g.visit > 0 ? g.reg / g.visit : 0;
-            value = (rate * 100).toFixed(2) + '%';
-          } else if (h.key === 'firstRate') {
-            const rate = g.visit > 0 ? g.firstUsers / g.visit : 0;
-            value = (rate * 100).toFixed(2) + '%';
-          } else if (h.key === 'firstRegRate') {
-            const rate = g.reg > 0 ? g.firstUsers / g.reg : 0;
-            value = (rate * 100).toFixed(2) + '%';
-          }
-
-          td.textContent = value;
-          tr.appendChild(td);
-        });
-
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-
-      groupResultContainer.appendChild(table);
-    }
-
-    function updateChart(groupData, groupCol, metricCol, metricType) {
-      clearChart();
-      if (!groupData || groupData.length === 0) return;
-
-      const chartType = chartTypeSelect.value || 'bar';
-
-      const labels = groupData.map((g) => g.group);
-      let values = [];
-      let labelText = '';
-
-      const isUsersTotal = metricCol === '__首充人数合计__';
-      const isAmountTotal = metricCol === '__首充金额合计__';
-      const isARPU = metricCol === '__ARPU__';
-      const isRegRate = metricCol === '__注册率__';
-      const isFirstRate = metricCol === '__首充转化率__';
-      const isFirstRegRate = metricCol === '__首充注册转化率__';
-
-      if (isARPU) {
-        values = groupData.map((g) =>
-          g.firstUsers > 0 ? g.firstAmount / g.firstUsers : 0
-        );
-        labelText = '首充ARPU (金额/首充人数)';
-      } else if (isRegRate) {
-        values = groupData.map((g) => (g.visit > 0 ? g.reg / g.visit : 0));
-        labelText = '注册率 (注册/访问)';
-      } else if (isFirstRate) {
-        values = groupData.map((g) =>
-          g.visit > 0 ? g.firstUsers / g.visit : 0
-        );
-        labelText = '首充转化率 (首充人数/访问)';
-      } else if (isFirstRegRate) {
-        values = groupData.map((g) =>
-          g.reg > 0 ? g.firstUsers / g.reg : 0
-        );
-        labelText = '首充注册转化率 (首充人数/注册)';
-      } else if (metricType === 'sum' && metricCol) {
-        values = groupData.map((g) => g.sum);
-        if (isUsersTotal) {
-          labelText = '首充人数合计(直推+裂变)';
-        } else if (isAmountTotal) {
-          labelText = '首充金额合计(直推+裂变)';
-        } else {
-          labelText = `${metricCol} Sum`;
-        }
-      } else {
-        values = groupData.map((g) => g.count);
-        labelText = `Count of ${groupCol}`;
-      }
-
-      const ctx = chartCanvas.getContext('2d');
-      chartInstance = new Chart(ctx, {
-        type: chartType,
-        data: {
-          labels,
-          datasets: [
-            {
-              label: labelText,
-              data: values,
+    <script>
+        // 多语言字典定义
+        const i18nTokens = {
+            zh: {
+                stat_total: "解析总像素数",
+                stat_active: "成功激活像素",
+                stat_events: "已下发事件数",
+                stat_rate: "任务成功率",
+                card_config: "控制配置中心",
+                card_monitor: "矩阵实时监视器",
+                card_history: "审计日志留痕",
+                label_pixel_ids: "Pixel IDs 集合 (逗号隔开多个):",
+                label_links: "激活落地页 Link 路由 (一行一个):",
+                opt_autodetect: "自动从 Link 中捕获特定参数 ID",
+                opt_parallel: "启用多线程高并发架构逻辑(高能快捷)",
+                status_idle: "就绪。等待输入必要的像素或链路凭证...",
+                status_err_empty: "未检测到有效 Pixel IDs 信息，请检查输入或导入数据。",
+                status_start: "底层初始化中... 准备处理共计 {n} 个像素单元。",
+                status_complete: "处理批次全部完成。请查阅监视面板审计日志状态。",
+                btn_run: "立即执行批量注入激活",
+                btn_demo: "载入标准测试沙盒数据",
+                btn_upload: "解析导入",
+                batch_upload_title: "外部纯文本源导入 (.txt / .csv)",
+                msg_empty: "暂无活动监控项。请在左侧填报数据后开启同步。",
+                th_time: "审计时间戳",
+                th_id: "目标像素 ID",
+                th_event: "下发事件链路",
+                th_val: "负载资产价值",
+                th_status: "最终状态",
+                badge_wait: "排队中",
+                badge_success: "完全激活",
+                badge_fail: "抛出异常"
             },
-          ],
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: true },
-          },
-          scales:
-            chartType === 'pie'
-              ? {}
-              : {
-                  x: {
-                    ticks: {
-                      autoSkip: true,
-                      maxTicksLimit: 10,
-                    },
-                  },
-                  y: {
-                    beginAtZero: true,
-                  },
-                },
-        },
-      });
-    }
+            en: {
+                stat_total: "Total Pixels",
+                stat_active: "Active Pixels",
+                stat_events: "Events Sent",
+                stat_rate: "Success Rate",
+                card_config: "Control Configuration Center",
+                card_monitor: "Real-time Grid Monitor",
+                card_history: "Audit Execution Log",
+                label_pixel_ids: "Pixel IDs (Comma separated):",
+                label_links: "Activation Links (One per line):",
+                opt_autodetect: "Auto-detect IDs from query URL strings",
+                opt_parallel: "Enable high-concurrency parallel tasks",
+                status_idle: "Awaiting tracking pixels or verification sources...",
+                status_err_empty: "No valid pixel specs found. Aborting execution.",
+                status_start: "Spinning up process environment... Processing {n} pixels.",
+                status_complete: "All synchronization completed successfully.",
+                btn_run: "Execute Direct Injections",
+                btn_demo: "Inject Dummy Sandbox Specs",
+                btn_upload: "Parse File",
+                batch_upload_title: "Import from localized text records (.txt / .csv)",
+                msg_empty: "No viewport data found. Ignite execution steps to display.",
+                th_time: "Timestamp",
+                th_id: "Pixel Tracking ID",
+                th_event: "Fired Trajectory",
+                th_val: "Payload Values",
+                th_status: "State",
+                badge_wait: "Awaiting",
+                badge_success: "Succeeded",
+                badge_fail: "Failed"
+            }
+        };
 
-    function clearChart() {
-      if (chartInstance) {
-        chartInstance.destroy();
-        chartInstance = null;
-      }
-    }
+        let currentLang = "zh";
 
-    function getHeadersFromSheet(sheet) {
-      const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1:A1');
-      const headers = [];
-      const firstRow = range.s.r;
+        function switchLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const token = el.getAttribute('data-i18n');
+                if (i18nTokens[lang] && i18nTokens[lang][token]) {
+                    el.textContent = i18nTokens[lang][token];
+                }
+            });
+        }
 
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = XLSX.utils.encode_cell({ r: firstRow, c: C });
-        const cell = sheet[cellAddress];
-        const header = cell && cell.v ? String(cell.v) : `Column ${C + 1}`;
-        headers.push(header);
-      }
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化语言
+            switchLanguage("zh");
+            document.getElementById('langSelector').addEventListener('change', (e)=> switchLanguage(e.target.value));
 
-      return headers;
-    }
+            const activateButton = document.getElementById('activateButton');
+            const resetButton = document.getElementById('resetButton');
+            const pixelIdsInput = document.getElementById('pixelIds');
+            const activationLinksInput = document.getElementById('activationLinks');
+            const progressBar = document.getElementById('progressBar');
+            const statusText = document.getElementById('statusText');
+            const historyTable = document.getElementById('historyTable');
+            const pixelGrid = document.getElementById('pixelGrid');
+            const noPixelsMessage = document.getElementById('noPixelsMessage');
+            const quickTest = document.getElementById('quickTest');
+            const uploadBtn = document.getElementById('uploadBtn');
+            const batchFile = document.getElementById('batchFile');
+            
+            const totalPixelsElement = document.getElementById('totalPixels');
+            const activePixelsElement = document.getElementById('activePixels');
+            const totalEventsElement = document.getElementById('totalEvents');
+            const successRateElement = document.getElementById('successRate');
+            
+            let pixels = [];
+            let totalEvents = 0;
+            let successfulEvents = 0;
+            
+            activateButton.addEventListener('click', startActivation);
+            resetButton.addEventListener('click', resetForm);
+            quickTest.addEventListener('click', addSamplePixels);
+            uploadBtn.addEventListener('click', handleFileUpload);
+            
+            function startActivation() {
+                extractPixelsFromInputs();
+                if (pixels.length === 0) {
+                    statusText.textContent = i18nTokens[currentLang].status_err_empty;
+                    return;
+                }
+                
+                activateButton.disabled = true;
+                activateButton.innerHTML = `<i class="fas fa-circle-notch fa-spin me-2"></i>Running...`;
+                
+                statusText.textContent = i18nTokens[currentLang].status_start.replace("{n}", pixels.length);
+                updateProgress(10);
+                
+                const parallelProcessing = document.getElementById('parallelProcessing').checked;
+                if (parallelProcessing) {
+                    processPixelsInParallel();
+                } else {
+                    processPixelsInSequence();
+                }
+            }
+            
+            function processPixelsInParallel() {
+                const total = pixels.length;
+                let processed = 0;
+                
+                pixels.forEach(pixel => {
+                    setNodeState(pixel.id, 'running');
+                    activatePixel(pixel).then(() => {
+                        processed++;
+                        updateProgress(10 + (processed / total) * 90);
+                        if (processed === total) completeActivation();
+                    });
+                });
+            }
+            
+            function processPixelsInSequence() {
+                let index = 0;
+                const next = () => {
+                    if (index < pixels.length) {
+                        setNodeState(pixels[index].id, 'running');
+                        activatePixel(pixels[index]).then(() => {
+                            index++;
+                            updateProgress(10 + (index / pixels.length) * 90);
+                            next();
+                        });
+                    } else {
+                        completeActivation();
+                    }
+                };
+                next();
+            }
+            
+            async function activatePixel(pixel) {
+                try {
+                    await loadTikTokPixel(pixel.id);
+                    await triggerRegisterEvent(pixel.id);
+                    const txId = await triggerPurchaseEvent(pixel.id);
+                    
+                    updatePixelCardUI(pixel.id, 'success', txId);
+                    addToHistory(pixel.id, txId, 'success');
+                    return true;
+                } catch (error) {
+                    updatePixelCardUI(pixel.id, 'error');
+                    addToHistory(pixel.id, '', 'error');
+                    return false;
+                }
+            }
+            
+            function completeActivation() {
+                updateProgress(100);
+                statusText.textContent = i18nTokens[currentLang].status_complete;
+                activateButton.disabled = false;
+                activateButton.innerHTML = `<i class="fas fa-bolt me-1"></i> <span>${i18nTokens[currentLang].btn_run}</span>`;
+                updateStats();
+            }
 
-    function formatFileSize(bytes) {
-      if (bytes === 0) return '0 B';
-      const k = 1024;
-      const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-      const i = Math.floor(Math.log(bytes) / Math.log(k));
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    function formatNumber(num) {
-      if (num === null || num === undefined || isNaN(num)) return '—';
-      return Number(num).toLocaleString(undefined, {
-        maximumFractionDigits: 4,
-      });
-    }
-
-    function showError(msg) {
-      fileError.textContent = msg;
-      fileError.classList.remove('hidden');
-    }
-
-    function resetUI() {
-      fileError.classList.add('hidden');
-      fileError.textContent = '';
-
-      workbook = null;
-      currentSheetName = null;
-      originalData = [];
-      filteredData = [];
-      currentHeaders = [];
-
-      sheetSelect.innerHTML = '<option value="">先上传文件</option>';
-      sheetSelect.disabled = true;
-
-      infoName.textContent = '—';
-      infoSize.textContent = '—';
-      infoSheets.textContent = '—';
-      infoActiveSheet.textContent = '—';
-      infoRows.textContent = '—';
-      infoCols.textContent = '—';
-
-      statsContainer.innerHTML =
-        '<p class="text-slate-400 text-sm">上传文件并选择 Sheet 后查看。</p>';
-
-      tableHead.innerHTML = '';
-      tableBody.innerHTML = '';
-      previewInfo.textContent = 'Showing first 0 rows';
-
-      filterColumnSelect.innerHTML = '<option value="">(不过滤，使用全部)</option>';
-      metricColumnSelect.innerHTML = '<option value="">(只看 Count 行数)</option>';
-      groupColumnSelect.innerHTML = '<option value="">(选择分组列)</option>';
-      filterInfo.textContent = '当前无筛选，使用全部数据。';
-
-      groupResultContainer.innerHTML =
-        '<p class="text-slate-400 text-xs p-3">暂无分组结果，先选择参数再点击运行。</p>';
-      clearChart();
-    }
-
-    function escapeHTML(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
-    }
-  </script>
+            function setNodeState(pixelId, state) {
+                const badge = document.getElementById(`badge-${pixelId}`);
+                if(!badge) return;
+                if(state === 'running') {
+                    badge.className = "badge-dot bg-running";
+                    badge.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${i18nTokens[currentLang].badge_wait}`;
+                }
+            }
+            
+            function loadTikTokPixel(pixelId) {
+                return new Promise((resolve) => {
+                    if (window.ttq) delete window.ttq;
+                    let script = document.createElement('script');
+                    script.innerHTML = `
+                        !function (w, d, t) {
+                            w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+                            ttq.load('${pixelId}');
+                            ttq.page();
+                        }(window, document, 'ttq');
+                    `;
+                    document.head.appendChild(script);
+                    setTimeout(resolve, 120);
+                });
+            }
+            
+            function triggerRegisterEvent(pixelId) {
+                return new Promise((resolve) => {
+                    if (window.ttq) {
+                        try {
+                            ttq.instance(pixelId).track('Register', { content_type: 'activation', user_id: 'u_' + Math.floor(Math.random() * 1000) });
+                            totalEvents++; successfulEvents++;
+                        } catch (e) { totalEvents++; }
+                    }
+                    setTimeout(resolve, 100);
+                });
+            }
+            
+            function triggerPurchaseEvent(pixelId) {
+                return new Promise((resolve) => {
+                    const txId = 'TX-' + Math.floor(Math.random() * 899999 + 100000);
+                    if (window.ttq) {
+                        try {
+                            ttq.instance(pixelId).track('Purchase', { content_type: 'product', quantity: 1, price: 10, currency: 'BRL', value: 10, order_id: txId });
+                            totalEvents++; successfulEvents++;
+                        } catch (e) { totalEvents++; }
+                    }
+                    setTimeout(() => resolve(txId), 100);
+                });
+            }
+            
+            function extractPixelsFromInputs() {
+                pixels = [];
+                const rawIds = pixelIdsInput.value.trim();
+                if (rawIds) {
+                    rawIds.split(',').map(id => id.trim()).filter(id => id.length >= 5).forEach(id => {
+                        if(!pixels.some(p => p.id === id)) pixels.push({ id, source: 'direct' });
+                    });
+                }
+                
+                const rawLinks = activationLinksInput.value.trim();
+                if (rawLinks) {
+                    const autoDetect = document.getElementById('autoDetect').checked;
+                    rawLinks.split('\n').map(l => l.trim()).filter(l => l.length > 0).forEach(link => {
+                        let parsedId = autoDetect ? extractPixelIdFromLink(link) : link;
+                        if(parsedId && !pixels.some(p => p.id === parsedId)) {
+                            pixels.push({ id: parsedId, source: 'link' });
+                        }
+                    });
+                }
+                updatePixelGridUI();
+                updateStats();
+            }
+            
+            function extractPixelIdFromLink(link) {
+                try {
+                    const url = new URL(link);
+                    return url.searchParams.get('pixelId') || url.searchParams.get('id') || url.pathname.split('/').pop();
+                } catch (e) {
+                    return 'PXL' + Math.floor(Math.random() * 8999 + 1000);
+                }
+            }
+            
+            function updatePixelGridUI() {
+                if (pixels.length === 0) {
+                    noPixelsMessage.style.display = 'block';
+                    document.querySelectorAll('.pixel-card-node-real').forEach(el=>el.remove());
+                    return;
+                }
+                noPixelsMessage.style.display = 'none';
+                
+                // 清理旧节点
+                document.querySelectorAll('.pixel-card-node-real').forEach(el=>el.remove());
+                
+                pixels.forEach(pixel => {
+                    const div = document.createElement('div');
+                    div.className = 'pixel-status-node pixel-card-node-real';
+                    div.innerHTML = `
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <span class="fw-bold text-truncate" style="max-width:140px;">${pixel.id}</span>
+                            <span class="badge-dot bg-waiting" id="badge-${pixel.id}">
+                                <i class="far fa-clock"></i> ${i18nTokens[currentLang].badge_wait}
+                            </span>
+                        </div>
+                        <div class="text-muted" style="font-size:11px;" id="meta-${pixel.id}">Source: ${pixel.source}</div>
+                    `;
+                    pixelGrid.appendChild(div);
+                });
+            }
+            
+            function updatePixelCardUI(pixelId, status, txId = '') {
+                const badge = document.getElementById(`badge-${pixelId}`);
+                const meta = document.getElementById(`meta-${pixelId}`);
+                if (!badge) return;
+                
+                if (status === 'success') {
+                    badge.className = "badge-dot bg-success-lite";
+                    badge.innerHTML = `<i class="fas fa-check-circle"></i> ${i18nTokens[currentLang].badge_success}`;
+                    if(meta) meta.innerHTML = `Val: 10 BRL | ID: <span class="text-dark font-monospace">${txId}</span>`;
+                } else {
+                    badge.className = "badge-dot bg-danger-lite";
+                    badge.innerHTML = `<i class="fas fa-times-circle"></i> ${i18nTokens[currentLang].badge_fail}`;
+                }
+            }
+            
+            function addToHistory(pixelId, transactionId, status) {
+                const row = document.createElement('tr');
+                const timeStr = new Date().toLocaleTimeString();
+                const isSuccess = status === 'success';
+                
+                row.innerHTML = `
+                    <td class="text-secondary">${timeStr}</td>
+                    <td class="font-monospace fw-bold">${pixelId}</td>
+                    <td><span class="text-xs text-muted">Register, Purchase</span></td>
+                    <td>${isSuccess ? '10 BRL' : 'N/A'}</td>
+                    <td>
+                        <span class="badge ${isSuccess?'bg-success':'bg-danger'} bg-opacity-10 ${isSuccess?'text-success':'text-danger'} px-2 py-1 small">
+                            ${isSuccess ? i18nTokens[currentLang].badge_success : i18nTokens[currentLang].badge_fail}
+                        </span>
+                    </td>
+                `;
+                historyTable.insertBefore(row, historyTable.firstChild);
+            }
+            
+            function updateProgress(percent) {
+                progressBar.style.width = percent + '%';
+            }
+            
+            function resetForm() {
+                pixelIdsInput.value = '';
+                activationLinksInput.value = '';
+                pixels = [];
+                updateProgress(0);
+                statusText.textContent = i18nTokens[currentLang].status_idle;
+                updatePixelGridUI();
+                updateStats();
+            }
+            
+            function addSamplePixels() {
+                pixelIdsInput.value = 'CM3C2F77SJN5G97J9UR0, A1B2C3D4E5F6G7H8I9J0, TK99210484A';
+                activationLinksInput.value = 'https://dummy-landing.com/pay?pixelId=TEST888999';
+                extractPixelsFromInputs();
+            }
+            
+            function handleFileUpload() {
+                const file = batchFile.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                    let ids = [], links = [];
+                    lines.forEach(line => {
+                        if(line.includes('http')) links.push(line);
+                        else if(line.length >= 5) ids.push(line);
+                    });
+                    if(ids.length) pixelIdsInput.value = ids.join(', ');
+                    if(links.length) activationLinksInput.value = links.join('\n');
+                    extractPixelsFromInputs();
+                };
+                reader.readAsText(file);
+            }
+            
+            function updateStats() {
+                totalPixelsElement.textContent = pixels.length;
+                const activeCount = pixels.filter(p => {
+                    const el = document.getElementById(`badge-${p.id}`);
+                    return el && el.textContent.includes(i18nTokens[currentLang].badge_success);
+                }).length;
+                
+                activePixelsElement.textContent = activeCount;
+                totalEventsElement.textContent = totalEvents;
+                successRateElement.textContent = totalEvents > 0 ? `${Math.round((successfulEvents / totalEvents) * 100)}%` : '100%';
+            }
+        });
+    </script>
 </body>
 </html>
